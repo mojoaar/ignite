@@ -4,7 +4,11 @@ import { useChatStore } from "@/lib/store/chat";
 import { ChatBubble } from "./chat-bubble";
 import { ChatInput } from "./chat-input";
 
-export function ChatPanel() {
+interface ChatPanelProps {
+  onSend: (content: string) => void;
+}
+
+export function ChatPanel({ onSend }: ChatPanelProps) {
   const messages = useChatStore((s) => s.messages);
   const isStreaming = useChatStore((s) => s.isStreaming);
   const streamingContent = useChatStore((s) => s.streamingContent);
@@ -33,9 +37,6 @@ export function ChatPanel() {
       scrollToBottom();
     }
   }, [messages, streamingContent, showScrollButton, scrollToBottom]);
-
-  const handleSend = useCallback((_content: string) => {
-  }, []);
 
   return (
     <div className="flex flex-1 flex-col bg-background">
@@ -74,7 +75,7 @@ export function ChatPanel() {
         </button>
       )}
 
-      <ChatInput onSend={handleSend} disabled={isStreaming} />
+      <ChatInput onSend={onSend} disabled={isStreaming} />
     </div>
   );
 }
