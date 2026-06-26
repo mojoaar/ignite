@@ -5,6 +5,7 @@ type Mode = "dark" | "light";
 interface ThemeState {
   mode: Mode;
   toggle: () => void;
+  setMode: (mode: Mode) => void;
   init: () => void;
 }
 
@@ -21,6 +22,13 @@ export const useThemeStore = create<ThemeState>((set) => ({
       root.classList.toggle("dark", next === "dark");
       return { mode: next };
     }),
+  setMode: (mode: Mode) => {
+    localStorage.setItem(KEY, mode);
+    const root = document.documentElement;
+    root.setAttribute("data-mode", mode);
+    root.classList.toggle("dark", mode === "dark");
+    set({ mode });
+  },
   init: () => {
     const stored = localStorage.getItem(KEY);
     const mode: Mode = stored === "light" ? "light" : "dark";

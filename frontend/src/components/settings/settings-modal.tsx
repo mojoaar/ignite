@@ -24,6 +24,7 @@ import {
   ValidateProviderKey,
   ListProviderModels,
 } from "@wails/go/main/App";
+import { useThemeStore } from "@/lib/store/theme";
 import { cn } from "@/lib/utils";
 
 type Tab = "providers" | "appearance";
@@ -327,7 +328,11 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
               <Label className="text-text-secondary">Theme</Label>
               <Select
                 value={settings.appearance}
-                onValueChange={(v) => v && setSettings((s) => s && { ...s, appearance: v })}
+                onValueChange={(v) => {
+                  if (!v) return;
+                  setSettings((s) => s && { ...s, appearance: v });
+                  useThemeStore.getState().setMode(v as "dark" | "light");
+                }}
               >
                 <SelectTrigger className="bg-background">
                   <SelectValue />
