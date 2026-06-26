@@ -6,6 +6,10 @@ export function AddMessage(arg1) {
   return window['go']['main']['App']['AddMessage'](arg1);
 }
 
+export function AnalyzePath(arg1) {
+  return window['go']['main']['App']['AnalyzePath'](arg1);
+}
+
 export function CreateProject(arg1) {
   return window['go']['main']['App']['CreateProject'](arg1);
 }

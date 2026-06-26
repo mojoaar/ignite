@@ -1,6 +1,6 @@
 {
   "name": "ignite",
-  "outputfilename": "ignite",
+  "outputfilename": "Ignite",
   "frontend:dir": "frontend",
   "frontend:install": "pnpm install",
   "frontend:build": "pnpm run build",
