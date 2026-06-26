@@ -55,11 +55,11 @@ export function ChatPanel({ onSend }: ChatPanelProps) {
           <ChatBubble
             message={{
               id: "stream",
-              projectId: "",
+              project_id: "",
               phase: "",
               role: "assistant",
               content: streamingContent,
-              createdAt: new Date().toISOString(),
+              created_at: new Date().toISOString(),
             }}
             isStreaming
           />

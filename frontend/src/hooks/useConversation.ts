@@ -15,11 +15,11 @@ export function useConversation() {
     async (provider: string, model: string, content: string) => {
       const userMsg = {
         id: crypto.randomUUID(),
-        projectId: activeProjectId ?? "",
+        project_id: activeProjectId ?? "",
         phase: "",
         role: "user" as const,
         content,
-        createdAt: new Date().toISOString(),
+        created_at: new Date().toISOString(),
       };
 
       addMessage(userMsg);
@@ -44,11 +44,11 @@ export function useConversation() {
           const finalText = streamedContent || "[empty response]";
           const assistantMsg = {
             id: crypto.randomUUID(),
-            projectId: activeProjectId,
+            project_id: activeProjectId,
             phase: "",
             role: "assistant" as const,
             content: finalText,
-            createdAt: new Date().toISOString(),
+            created_at: new Date().toISOString(),
           };
           AddMessage(assistantMsg).catch(() => {});
         }

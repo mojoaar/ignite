@@ -18,7 +18,7 @@
     "forceConsistentCasingInFileNames": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@wails/*": ["./wailsjs/*"]
+      "@wails/*": ["./src/lib/wailsjs/*"]
     }
   },
   "include": ["src"]

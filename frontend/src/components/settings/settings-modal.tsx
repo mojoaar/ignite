@@ -149,7 +149,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             ...settings.providers,
             [pid]: { endpoint: f.endpoint, default_model: f.defaultModel },
           },
-        });
+        } as Parameters<typeof SaveSettings>[0]);
       }
       onClose();
     } catch {}

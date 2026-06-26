@@ -28,8 +28,8 @@ export function Sidebar() {
       path: "",
       provider: "",
       model: "",
-      createdAt: now,
-      updatedAt: now,
+      created_at: now,
+      updated_at: now,
     };
     try {
       await CreateProject(project);

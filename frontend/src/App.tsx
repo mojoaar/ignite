@@ -31,8 +31,8 @@ function App() {
     [provider, model, activeProjectId, sendMessage]
   );
 
-  const handleExport = useCallback(() => {
-    const md = ExportChat(messages.map((m) => ({
+  const handleExport = useCallback(async () => {
+    const md = await ExportChat(messages.map((m) => ({
       ...m,
       role: m.role,
     })));

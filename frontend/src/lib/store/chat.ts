@@ -1,25 +1,25 @@
 import { create } from "zustand";
 
-export type Role = "user" | "assistant" | "system";
+export type Role = string;
 
 export interface Message {
   id: string;
-  projectId: string;
+  project_id: string;
   phase: string;
   role: Role;
   content: string;
-  createdAt: string;
+  created_at: string;
 }
 
-interface Project {
+export interface Project {
   id: string;
   name: string;
   tagline: string;
   path: string;
   provider: string;
   model: string;
-  createdAt: string;
-  updatedAt: string;
+  created_at: string;
+  updated_at: string;
 }
 
 interface ChatState {
@@ -57,11 +57,11 @@ export const useChatStore = create<ChatState>((set) => ({
     set((s) => ({
       messages: [...s.messages, {
         id: crypto.randomUUID(),
-        projectId: s.activeProjectId ?? "",
+        project_id: s.activeProjectId ?? "",
         phase: "",
         role: "assistant",
         content,
-        createdAt: new Date().toISOString(),
+        created_at: new Date().toISOString(),
       }],
       streamingContent: "",
       isStreaming: false,
