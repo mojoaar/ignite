@@ -1,7 +1,14 @@
 import { useCallback } from "react";
 import { useChatStore } from "@/lib/store/chat";
-import { SendMessageStream, AddMessage } from "@wails/go/main/App";
+import { SendMessageStream, AddMessage, AnalyzePath } from "@wails/go/main/App";
 import { EventsOn, EventsOff } from "@wails/runtime";
+
+const PATH_PATTERN = /(~\/\S+|(?:\/Users\/|\/home\/|\/tmp\/)\S+)/g;
+
+function extractPaths(content: string): string[] {
+  const matches = content.match(PATH_PATTERN);
+  return matches ? [...new Set(matches)] : [];
+}
 
 export function useConversation() {
   const addMessage = useChatStore((s) => s.addMessage);
@@ -34,6 +41,24 @@ export function useConversation() {
         ...messages.map((m) => ({ role: m.role, content: m.content })),
         { role: "user", content },
       ];
+
+      const paths = extractPaths(content);
+      let scans = "";
+      if (paths.length > 0) {
+        const results = await Promise.allSettled(
+          paths.map((p) => AnalyzePath(p))
+        );
+        scans = results
+          .map((r) => (r.status === "fulfilled" ? r.value : ""))
+          .filter(Boolean)
+          .join("\n\n---\n\n");
+        if (scans) {
+          apiMessages.splice(-1, 0, {
+            role: "system",
+            content: `The following path context was automatically resolved from the user's message. Use this information to inform your response:\n\n${scans}`,
+          });
+        }
+      }
 
       try {
         await SendMessageStream(provider, model, apiMessages);

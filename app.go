@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"ignite/internal/history"
 	"ignite/internal/providers"
+	"ignite/internal/scanner"
 	"ignite/internal/settings"
 	"ignite/internal/templates"
 	"os"
@@ -174,4 +175,8 @@ func (a *App) ExportChat(messages []history.Message) string {
 		md += fmt.Sprintf("### %s\n\n%s\n\n---\n\n", role, m.Content)
 	}
 	return md
+}
+
+func (a *App) AnalyzePath(path string) string {
+	return scanner.AnalyzePath(path)
 }

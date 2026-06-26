@@ -7,6 +7,8 @@ import {templates} from '../models';
 
 export function AddMessage(arg1:history.Message):Promise<void>;
 
+export function AnalyzePath(arg1:string):Promise<string>;
+
 export function CreateProject(arg1:history.Project):Promise<void>;
 
 export function ExportChat(arg1:Array<history.Message>):Promise<string>;
