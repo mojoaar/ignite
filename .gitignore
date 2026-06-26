@@ -1,0 +1,6 @@
+frontend/dist/
+frontend/node_modules/
+frontend/wailsjs/
+ignite
+.DS_Store
+*.log
