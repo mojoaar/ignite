@@ -6,7 +6,6 @@ import { Sidebar } from "@/components/sidebar/sidebar";
 import { ChatPanel } from "@/components/chat/chat-panel";
 import { StatusBar } from "@/components/status-bar/status-bar";
 import { SettingsModal } from "@/components/settings/settings-modal";
-import { AboutModal } from "@/components/settings/about-modal";
 import { ExportChat, HasAPIKey } from "@wails/go/main/App";
 import { EventsOn } from "@wails/runtime";
 
@@ -19,7 +18,6 @@ function App() {
   const [provider, setProvider] = useState("opencode-go");
   const [model, setModel] = useState("gpt-4o");
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [aboutOpen, setAboutOpen] = useState(false);
   const [providerReady, setProviderReady] = useState(false);
 
   useEffect(() => {
@@ -31,12 +29,10 @@ function App() {
     const unsubNew = EventsOn("menu-new-project", () => {});
     const unsubExport = EventsOn("menu-export", () => { handleExport(); });
     const unsubSettings = EventsOn("menu-settings", () => { setSettingsOpen(true); });
-    const unsubAbout = EventsOn("menu-about", () => { setAboutOpen(true); });
     return () => {
       typeof unsubNew === "function" && unsubNew();
       typeof unsubExport === "function" && unsubExport();
       typeof unsubSettings === "function" && unsubSettings();
-      typeof unsubAbout === "function" && unsubAbout();
     };
   }, [messages]);
 
@@ -84,10 +80,6 @@ function App() {
       <SettingsModal
         open={settingsOpen}
         onClose={() => setSettingsOpen(false)}
-      />
-      <AboutModal
-        open={aboutOpen}
-        onClose={() => setAboutOpen(false)}
       />
     </div>
   );

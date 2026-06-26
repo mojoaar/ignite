@@ -22,21 +22,7 @@ func main() {
 	menuApp = NewApp()
 
 	appMenu := menu.NewMenu()
-
-	igniteMenu := appMenu.AddSubmenu("Ignite")
-	igniteMenu.AddText("About Ignite", nil, func(_ *menu.CallbackData) {
-		if menuApp != nil {
-			runtime.EventsEmit(menuApp.ctx, "menu-about")
-		}
-	})
-	igniteMenu.AddSeparator()
-	igniteMenu.AddText("Settings...", keys.CmdOrCtrl(","), func(_ *menu.CallbackData) {
-		if menuApp != nil {
-			runtime.EventsEmit(menuApp.ctx, "menu-settings")
-		}
-	})
-	igniteMenu.AddSeparator()
-	igniteMenu.Append(menu.AppMenu())
+	appMenu.Append(menu.AppMenu())
 	appMenu.Append(menu.EditMenu())
 
 	fileMenu := appMenu.AddSubmenu("File")
@@ -45,10 +31,15 @@ func main() {
 			runtime.EventsEmit(menuApp.ctx, "menu-new-project")
 		}
 	})
-	fileMenu.AddSeparator()
 	fileMenu.AddText("Export Chat", keys.CmdOrCtrl("e"), func(_ *menu.CallbackData) {
 		if menuApp != nil {
 			runtime.EventsEmit(menuApp.ctx, "menu-export")
+		}
+	})
+	fileMenu.AddSeparator()
+	fileMenu.AddText("Settings...", keys.CmdOrCtrl(","), func(_ *menu.CallbackData) {
+		if menuApp != nil {
+			runtime.EventsEmit(menuApp.ctx, "menu-settings")
 		}
 	})
 

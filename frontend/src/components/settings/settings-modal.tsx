@@ -406,10 +406,14 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
               <Label className="text-text-secondary">Font</Label>
               <Select
                 value={settings.font}
-                onValueChange={(v) => {
-                  if (!v) return;
-                  setSettings((s) => s && { ...s, font: v });
-                }}
+                  onValueChange={(v) => {
+                    if (!v) return;
+                    setSettings((s) => s && { ...s, font: v });
+                    document.documentElement.style.setProperty(
+                      "--font-mono",
+                      `"${v}", monospace`
+                    );
+                  }}
               >
                 <SelectTrigger className="bg-background">
                   <SelectValue placeholder="Select a font" />
