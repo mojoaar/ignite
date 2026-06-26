@@ -1,0 +1,28 @@
+# {{.Name}}
+> {{.Tagline}}
+## Features
+{{range .Features}}- {{.}}
+{{end}}
+## Quick Start
+```sh
+{{range .DevWorkflow.Setup}}{{.}}
+{{end}}
+{{range .DevWorkflow.Dev}}{{.}}
+{{end}}
+```
+## Development
+| Command | Description |
+| :------ | :---------- |
+| Build | {{range .DevWorkflow.Build}}`{{.}}` {{end}}|
+| Test | {{range .DevWorkflow.Test}}`{{.}}` {{end}}|
+| Lint | {{range .DevWorkflow.Lint}}`{{.}}` {{end}}|
+## Tech Stack
+{{range .TechStack}}- **{{.Category}}:** {{.Choice}}
+{{end}}
+## Changelog
+| Version | Date | Changes |
+| :------ | :--- | :------ |
+{{range .Changelog}}| {{.Version}} | {{.Date}} | {{range .Changes}}{{.}}<br>{{end}} |
+{{end}}
+## License
+{{.License}}

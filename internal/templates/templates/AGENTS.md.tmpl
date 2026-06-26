@@ -1,0 +1,38 @@
+# {{.Name}} — Agent Guide
+> **Project:** {{.Name}} — {{.Tagline}}
+---
+## Quick Commands
+| Action | Command |
+| :----- | :------ |
+| Build | {{range .DevWorkflow.Build}}`{{.}}` {{end}}|
+| Test | {{range .DevWorkflow.Test}}`{{.}}` {{end}}|
+| Lint | {{range .DevWorkflow.Lint}}`{{.}}` {{end}}|
+| Type Check | {{range .DevWorkflow.TypeCheck}}`{{.}}` {{end}}|
+---
+## Tech Stack
+| Layer | Choice |
+| :---- | :----- |
+{{range .TechStack}}| {{.Category}} | {{.Choice}} |
+{{end}}
+---
+## Code Rules
+### Never
+{{range .BannedPackages}}- {{.}}
+{{end}}
+---
+## Package Audit
+Before adding any new dependency:
+1. Check if stdlib or existing dep provides the functionality
+2. Check maintenance status, last commit, open issues
+3. Check license compatibility with {{.License}}
+4. Verify not in banned list
+---
+## Database
+{{range .DBTables}}### {{.Name}}
+{{range .Columns}}- `{{.Name}}` — {{.Type}}: {{.Desc}}
+{{end}}
+{{end}}
+---
+## Environment Variables
+{{range .EnvVars}}- `{{.Name}}` — {{.Desc}}{{- if .Default}} (default: {{.Default}}){{end}}
+{{end}}

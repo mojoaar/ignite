@@ -1,0 +1,96 @@
+# {{.Name}}
+**Tagline:** {{.Tagline}}
+> {{.Description}}
+---
+## Identity
+- **Name:** {{.Name}}
+- **Tagline:** {{.Tagline}}
+- **Description:** {{.Description}}
+- **License:** {{.License}}
+---
+## Tech Stack
+| Layer | Choice |
+| :---- | :----- |
+| **Frontend** | {{.Frontend}} |
+| **Backend** | {{.Backend}} |
+| **Database** | {{.Database}} |
+| **Auth** | {{.Auth}} |
+### Dependencies
+| Package | Version | Why |
+| :------ | :------ | :-- |
+{{range .Dependencies}}| {{.Name}} | {{.Version}} | {{.Why}} |
+{{end}}
+---
+## Package Audit Rules
+### Never
+{{range .BannedPackages}}- {{.}}
+{{end}}
+---
+## API Endpoints
+| Method | Path | Description | Auth |
+| :----- | :--- | :---------- | :--- |
+{{range .APIs}}| {{.Method}} | {{.Path}} | {{.Desc}} | {{.Auth}} |
+{{end}}
+---
+## Database Schema
+{{range .DBTables}}### {{.Name}}
+| Column | Type | Description |
+| :----- | :--- | :---------- |
+{{range .Columns}}| {{.Name}} | {{.Type}} | {{.Desc}} |
+{{end}}
+{{end}}
+---
+## Development Workflow
+### Setup
+{{range .DevWorkflow.Setup}}- `{{.}}`
+{{end}}
+### Build
+{{range .DevWorkflow.Build}}- `{{.}}`
+{{end}}
+### Test
+{{range .DevWorkflow.Test}}- `{{.}}`
+{{end}}
+### Lint
+{{range .DevWorkflow.Lint}}- `{{.}}`
+{{end}}
+### Type Check
+{{range .DevWorkflow.TypeCheck}}- `{{.}}`
+{{end}}
+---
+## Environment Variables
+| Variable | Description | Default |
+| :------- | :---------- | :------ |
+{{range .EnvVars}}| {{.Name}} | {{.Desc}} | {{.Default}} |
+{{end}}
+---
+## Performance Targets
+| Metric | Target |
+| :----- | :----- |
+{{range .Performance}}| {{.Metric}} | {{.Target}} |
+{{end}}
+---
+## Risks & Mitigations
+| Risk | Mitigation |
+| :--- | :--------- |
+{{range .Risks}}| {{.Risk}} | {{.Mitigation}} |
+{{end}}
+---
+## Changelog
+| Version | Date | Changes |
+| :------ | :--- | :------ |
+{{range .Changelog}}| {{.Version}} | {{.Date}} | {{range .Changes}}{{.}}<br>{{end}} |
+{{end}}
+---
+## Theme (if applicable)
+### Dark
+| Token | Value |
+| :---- | :---- |
+| Background | `{{.Theme.Dark.Background}}` |
+| Accent | `{{.Theme.Dark.Accent}}` |
+### Light
+| Token | Value |
+| :---- | :---- |
+| Background | `{{.Theme.Light.Background}}` |
+| Accent | `{{.Theme.Light.Accent}}` |
+### Font
+{{.Theme.Font}}

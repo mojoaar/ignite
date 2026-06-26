@@ -1,0 +1,35 @@
+# {{.Name}} — Implementation Plan
+> {{.Tagline}}
+**Tech Stack:**
+| Layer | Choice |
+| :---- | :----- |
+{{range .TechStack}}| {{.Category}} | {{.Choice}} |
+{{end}}
+---
+{{range .Phases}}
+## {{.Name}}
+> {{.Description}}
+{{range .Tasks}}- [ ] {{.}}
+{{end}}
+### Verification
+{{range $.Verification}}- [ ] `{{.}}`
+{{end}}
+---
+{{end}}
+## Performance Targets
+| Metric | Target |
+| :----- | :----- |
+{{range .Performance}}| {{.Metric}} | {{.Target}} |
+{{end}}
+---
+## Risks & Mitigations
+| Risk | Mitigation |
+| :--- | :--------- |
+{{range .Risks}}| {{.Risk}} | {{.Mitigation}} |
+{{end}}
+---
+## Changelog
+| Version | Date | Changes |
+| :------ | :--- | :------ |
+{{range .Changelog}}| {{.Version}} | {{.Date}} | {{range .Changes}}{{.}}<br>{{end}} |
+{{end}}
