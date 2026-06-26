@@ -159,6 +159,14 @@ func (a *App) SaveProjectFiles(projectDir string, files *templates.ProjectFiles)
 	return nil
 }
 
+func (a *App) ListProviderModels(providerName string) ([]providers.Model, error) {
+	p, err := a.GetProvider(providerName)
+	if err != nil {
+		return nil, err
+	}
+	return p.ListModels(a.ctx)
+}
+
 func (a *App) ExportChat(messages []history.Message) string {
 	var md string
 	for _, m := range messages {

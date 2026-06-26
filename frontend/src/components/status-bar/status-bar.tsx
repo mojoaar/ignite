@@ -1,0 +1,116 @@
+import { useState, useEffect } from "react";
+import { Settings, Download, CheckCircle, XCircle } from "lucide-react";
+import { ListProviderModels, HasAPIKey } from "@wails/go/main/App";
+
+const PROVIDERS = [
+  { id: "opencode-go", label: "OpenCode Go" },
+  { id: "opencode-zen", label: "OpenCode Zen" },
+  { id: "claude", label: "Claude" },
+  { id: "deepseek", label: "DeepSeek" },
+  { id: "github-copilot", label: "GitHub Copilot" },
+];
+
+const DEFAULT_MODELS: Record<string, string[]> = {
+  "opencode-go": ["gpt-4o", "gpt-4o-mini"],
+  "opencode-zen": ["gpt-4o", "gpt-4o-mini"],
+  claude: ["claude-sonnet-4-20250514", "claude-opus-4-20250514", "claude-haiku-3.5"],
+  deepseek: ["deepseek-chat", "deepseek-reasoner"],
+  "github-copilot": ["github-copilot"],
+};
+
+interface StatusBarProps {
+  provider: string;
+  model: string;
+  onProviderChange: (provider: string) => void;
+  onModelChange: (model: string) => void;
+  onOpenSettings: () => void;
+  onExport: () => void;
+}
+
+export function StatusBar({
+  provider,
+  model,
+  onProviderChange,
+  onModelChange,
+  onOpenSettings,
+  onExport,
+}: StatusBarProps) {
+  const [models, setModels] = useState<string[]>(DEFAULT_MODELS[provider] ?? []);
+  const [connected, setConnected] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    HasAPIKey(provider)
+      .then((hasKey) => setConnected(hasKey))
+      .catch(() => setConnected(false));
+  }, [provider]);
+
+  useEffect(() => {
+    ListProviderModels(provider)
+      .then((m) => {
+        if (m && m.length > 0) {
+          setModels(m.map((x: { id: string }) => x.id));
+        } else {
+          setModels(DEFAULT_MODELS[provider] ?? []);
+        }
+      })
+      .catch(() => {
+        setModels(DEFAULT_MODELS[provider] ?? []);
+      });
+  }, [provider]);
+
+  return (
+    <div className="flex h-10 shrink-0 items-center gap-3 border-t border-border bg-surface px-4">
+      <select
+        value={provider}
+        onChange={(e) => onProviderChange(e.target.value)}
+        className="h-7 rounded border border-border bg-background px-2 font-mono text-xs text-text-primary focus:border-accent focus:outline-none"
+      >
+        {PROVIDERS.map((p) => (
+          <option key={p.id} value={p.id}>
+            {p.label}
+          </option>
+        ))}
+      </select>
+
+      <select
+        value={model}
+        onChange={(e) => onModelChange(e.target.value)}
+        className="h-7 rounded border border-border bg-background px-2 font-mono text-xs text-text-primary focus:border-accent focus:outline-none"
+      >
+        {models.map((m) => (
+          <option key={m} value={m}>
+            {m}
+          </option>
+        ))}
+      </select>
+
+      <span className="text-text-secondary" title={connected ? "Connected" : connected === false ? "Disconnected" : "Checking..."}>
+        {connected === true ? (
+          <CheckCircle className="h-4 w-4 text-success" />
+        ) : connected === false ? (
+          <XCircle className="h-4 w-4 text-error" />
+        ) : (
+          <span className="flex h-4 w-4 items-center justify-center text-xs">...</span>
+        )}
+      </span>
+
+      <div className="flex-1" />
+
+      <button
+        onClick={onOpenSettings}
+        className="rounded p-1 text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+        title="Settings"
+      >
+        <Settings className="h-4 w-4" />
+      </button>
+
+      <button
+        onClick={onExport}
+        className="rounded p-1 text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+        title="Export chat"
+      >
+        <Download className="h-4 w-4" />
+      </button>
+    </div>
+  );
+}
