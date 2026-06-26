@@ -22,6 +22,7 @@ import {
   SetAPIKey,
   HasAPIKey,
   ValidateProviderKey,
+  ListProviderModels,
 } from "@wails/go/main/App";
 import { cn } from "@/lib/utils";
 
@@ -83,6 +84,8 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const [providerFields, setProviderFields] = useState<Record<string, ProviderFields>>({});
   const [saving, setSaving] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState("opencode-go");
+  const [providerModels, setProviderModels] = useState<Record<string, string[]>>({});
+  const [loadingModels, setLoadingModels] = useState(false);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -91,6 +94,23 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
       return () => document.removeEventListener("keydown", onKeyDown);
     }
   }, [open, onClose]);
+
+  const loadProviderModels = async (provider: string) => {
+    if (providerModels[provider]) return;
+    setLoadingModels(true);
+    try {
+      const models = await ListProviderModels(provider);
+      setProviderModels((prev) => ({
+        ...prev,
+        [provider]: (models ?? []).map((m: { id: string }) => m.id),
+      }));
+    } catch {}
+    setLoadingModels(false);
+  };
+
+  useEffect(() => {
+    loadProviderModels(selectedProvider);
+  }, [selectedProvider, open]);
 
   useEffect(() => {
     if (!open) return;
@@ -227,12 +247,29 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
               <div className="space-y-2">
                 <Label className="text-text-secondary" htmlFor="dm">Default Model</Label>
-                <Input
-                  id="dm"
+                <Select
                   value={providerFields[selectedProvider]?.defaultModel ?? ""}
-                  onChange={(e) => setField(selectedProvider, "defaultModel", e.target.value)}
-                  className="bg-surface font-mono text-sm"
-                />
+                  onValueChange={(v) => {
+                    if (!v) return;
+                    setField(selectedProvider, "defaultModel", v);
+                  }}
+                >
+                  <SelectTrigger className="bg-background">
+                    <SelectValue placeholder={loadingModels ? "Loading models..." : "Select a model"} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(providerModels[selectedProvider] ?? []).map((m) => (
+                      <SelectItem key={m} value={m}>
+                        {m}
+                      </SelectItem>
+                    ))}
+                    {!providerModels[selectedProvider] && (
+                      <SelectItem value={providerFields[selectedProvider]?.defaultModel ?? ""}>
+                        {providerFields[selectedProvider]?.defaultModel ?? ""}
+                      </SelectItem>
+                    )}
+                  </SelectContent>
+                </Select>
               </div>
 
               <div className="space-y-2">
@@ -304,13 +341,49 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
             <div className="space-y-2">
               <Label className="text-text-secondary">Default License</Label>
-              <Input
+              <Select
                 value={settings.default_license}
-                onChange={(e) =>
-                  setSettings((s) => s && { ...s, default_license: e.target.value })
-                }
-                className="bg-surface font-mono text-sm"
-              />
+                onValueChange={(v) => {
+                  if (!v) return;
+                  setSettings((s) => s && { ...s, default_license: v });
+                }}
+              >
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select a license" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[
+                    "MIT",
+                    "Apache-2.0",
+                    "GPL-3.0",
+                    "AGPL-3.0",
+                    "BSD-3-Clause",
+                    "BSD-2-Clause",
+                    "MPL-2.0",
+                    "Unlicense",
+                    "Proprietary",
+                  ].map((lic) => (
+                    <SelectItem key={lic} value={lic}>
+                      {lic}
+                    </SelectItem>
+                  ))}
+                  {![
+                    "MIT",
+                    "Apache-2.0",
+                    "GPL-3.0",
+                    "AGPL-3.0",
+                    "BSD-3-Clause",
+                    "BSD-2-Clause",
+                    "MPL-2.0",
+                    "Unlicense",
+                    "Proprietary",
+                  ].includes(settings.default_license) && (
+                    <SelectItem value={settings.default_license}>
+                      {settings.default_license}
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
@@ -326,13 +399,51 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
             <div className="space-y-2">
               <Label className="text-text-secondary">Font</Label>
-              <Input
+              <Select
                 value={settings.font}
-                onChange={(e) =>
-                  setSettings((s) => s && { ...s, font: e.target.value })
-                }
-                className="bg-surface font-mono text-sm"
-              />
+                onValueChange={(v) => {
+                  if (!v) return;
+                  setSettings((s) => s && { ...s, font: v });
+                }}
+              >
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select a font" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[
+                    "JetBrains Mono",
+                    "Fira Code",
+                    "Cascadia Code",
+                    "IBM Plex Mono",
+                    "Source Code Pro",
+                    "Inconsolata",
+                    "Ubuntu Mono",
+                    "DejaVu Sans Mono",
+                    "Roboto Mono",
+                    "Monoid",
+                  ].map((f) => (
+                    <SelectItem key={f} value={f}>
+                      {f}
+                    </SelectItem>
+                  ))}
+                  {![
+                    "JetBrains Mono",
+                    "Fira Code",
+                    "Cascadia Code",
+                    "IBM Plex Mono",
+                    "Source Code Pro",
+                    "Inconsolata",
+                    "Ubuntu Mono",
+                    "DejaVu Sans Mono",
+                    "Roboto Mono",
+                    "Monoid",
+                  ].includes(settings.font) && (
+                    <SelectItem value={settings.font}>
+                      {settings.font}
+                    </SelectItem>
+                  )}
+                </SelectContent>
+              </Select>
             </div>
           </div>
         )}
