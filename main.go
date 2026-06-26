@@ -23,7 +23,6 @@ func main() {
 
 	appMenu := menu.NewMenu()
 	appMenu.Append(menu.AppMenu())
-	appMenu.Append(menu.EditMenu())
 
 	fileMenu := appMenu.AddSubmenu("File")
 	fileMenu.AddText("New Project", keys.CmdOrCtrl("n"), func(_ *menu.CallbackData) {
@@ -42,6 +41,8 @@ func main() {
 			runtime.EventsEmit(menuApp.ctx, "menu-settings")
 		}
 	})
+
+	appMenu.Append(menu.EditMenu())
 
 	err := wails.Run(&options.App{
 		Title:  "Ignite",
