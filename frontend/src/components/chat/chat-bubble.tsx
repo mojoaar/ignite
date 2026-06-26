@@ -59,7 +59,8 @@ export function ChatBubble({ message, isStreaming }: ChatBubbleProps) {
     <div
       className={cn(
         "flex w-full gap-3 px-4 py-3",
-        isUser ? "justify-end" : "justify-start"
+        isUser ? "justify-end" : "justify-start",
+        !isStreaming && "animate-slide-up"
       )}
     >
       {!isUser && (
@@ -83,7 +84,7 @@ export function ChatBubble({ message, isStreaming }: ChatBubbleProps) {
               {message.content}
             </ReactMarkdown>
             {isStreaming && (
-              <span className="ml-0.5 inline-block h-4 w-1 animate-pulse bg-accent" />
+              <span className="ml-0.5 inline-block h-4 w-1 animate-blink bg-accent" />
             )}
           </div>
         )}

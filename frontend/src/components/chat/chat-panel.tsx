@@ -39,7 +39,7 @@ export function ChatPanel({ onSend }: ChatPanelProps) {
   }, [messages, streamingContent, showScrollButton, scrollToBottom]);
 
   return (
-    <div className="flex flex-1 flex-col bg-background">
+    <div className="relative flex flex-1 flex-col bg-background">
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         {messages.length === 0 && !isStreaming && (
           <div className="flex h-full items-center justify-center">

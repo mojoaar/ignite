@@ -85,6 +85,14 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const [selectedProvider, setSelectedProvider] = useState("opencode-go");
 
   useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    if (open) {
+      document.addEventListener("keydown", onKeyDown);
+      return () => document.removeEventListener("keydown", onKeyDown);
+    }
+  }, [open, onClose]);
+
+  useEffect(() => {
     if (!open) return;
     GetSettings()
       .then((s) => {
