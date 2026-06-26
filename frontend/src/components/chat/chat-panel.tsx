@@ -6,12 +6,14 @@ import { ChatInput } from "./chat-input";
 
 interface ChatPanelProps {
   onSend: (content: string) => void;
+  providerReady?: boolean;
 }
 
-export function ChatPanel({ onSend }: ChatPanelProps) {
+export function ChatPanel({ onSend, providerReady = false }: ChatPanelProps) {
   const messages = useChatStore((s) => s.messages);
   const isStreaming = useChatStore((s) => s.isStreaming);
   const streamingContent = useChatStore((s) => s.streamingContent);
+  const activeProjectId = useChatStore((s) => s.activeProjectId);
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
 
@@ -43,9 +45,25 @@ export function ChatPanel({ onSend }: ChatPanelProps) {
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         {messages.length === 0 && !isStreaming && (
           <div className="flex h-full items-center justify-center">
-            <p className="font-mono text-sm text-text-secondary">
-              Start a conversation to provision your project.
-            </p>
+            {!activeProjectId ? (
+              <div className="max-w-sm text-center space-y-3">
+                <h2 className="font-mono text-lg text-text-primary">Welcome to Ignite</h2>
+                <p className="font-mono text-sm text-text-secondary leading-relaxed">
+                  Provisioning with a heartbeat. Create a new project to begin
+                  a guided AI conversation that will produce a full spec,
+                  agent guide, implementation plan, and README.
+                </p>
+                {!providerReady && (
+                  <p className="font-mono text-xs text-text-secondary/70">
+                    Configure an AI provider in Settings to get started.
+                  </p>
+                )}
+              </div>
+            ) : (
+              <p className="font-mono text-sm text-text-secondary">
+                Start a conversation to provision your project.
+              </p>
+            )}
           </div>
         )}
         {messages.map((msg) => (
@@ -75,7 +93,7 @@ export function ChatPanel({ onSend }: ChatPanelProps) {
         </button>
       )}
 
-      <ChatInput onSend={onSend} disabled={isStreaming} />
+      <ChatInput onSend={onSend} disabled={isStreaming || !activeProjectId || !providerReady} />
     </div>
   );
 }
