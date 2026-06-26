@@ -36,4 +36,12 @@ describe("theme store", () => {
     useThemeStore.getState().toggle();
     expect(document.documentElement.getAttribute("data-mode")).toBe("dark");
   });
+
+  it("init and toggle update dark class", () => {
+    localStorage.setItem("ignite-mode", "light");
+    useThemeStore.getState().init();
+    expect(document.documentElement.classList.contains("dark")).toBe(false);
+    useThemeStore.getState().toggle();
+    expect(document.documentElement.classList.contains("dark")).toBe(true);
+  });
 });
