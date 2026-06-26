@@ -338,8 +338,8 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="dark">Dark</SelectItem>
-                  <SelectItem value="light">Light</SelectItem>
+                  <SelectItem value="dark">dark</SelectItem>
+                  <SelectItem value="light">light</SelectItem>
                 </SelectContent>
               </Select>
             </div>
