@@ -22,7 +22,7 @@ import {
   SetAPIKey,
   HasAPIKey,
   ValidateProviderKey,
-  ListProviderModels,
+  GetCachedModels,
 } from "@wails/go/main/App";
 import { useThemeStore } from "@/lib/store/theme";
 import { cn } from "@/lib/utils";
@@ -82,8 +82,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const [providerFields, setProviderFields] = useState<Record<string, ProviderFields>>({});
   const [saving, setSaving] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState("opencode-go");
-  const [providerModels, setProviderModels] = useState<Record<string, string[]>>({});
-  const [loadingModels, setLoadingModels] = useState(false);
+  const [providerModels, setProviderModels] = useState<Record<string, { id: string; name: string }[]>>({});
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -95,15 +94,16 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
   const loadProviderModels = async (provider: string) => {
     if (providerModels[provider]) return;
-    setLoadingModels(true);
     try {
-      const models = await ListProviderModels(provider);
+      const models = await GetCachedModels(provider);
       setProviderModels((prev) => ({
         ...prev,
-        [provider]: (models ?? []).map((m: { id: string }) => m.id),
+        [provider]: (models ?? []).map((m: { model_id: string; display_name: string }) => ({
+          id: m.model_id,
+          name: m.display_name || m.model_id,
+        })),
       }));
     } catch {}
-    setLoadingModels(false);
   };
 
   useEffect(() => {
@@ -253,17 +253,17 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                   }}
                 >
                   <SelectTrigger className="bg-background">
-                    <SelectValue placeholder={loadingModels ? "Loading models..." : "Select a model"} />
+                    <SelectValue placeholder="Select a model" />
                   </SelectTrigger>
                   <SelectContent>
                     {(providerModels[selectedProvider] ?? []).map((m) => (
-                      <SelectItem key={m} value={m}>
-                        {m}
+                      <SelectItem key={m.id} value={m.id}>
+                        {m.name}
                       </SelectItem>
                     ))}
-                    {!providerModels[selectedProvider] && (
+                    {(!providerModels[selectedProvider] || providerModels[selectedProvider].length === 0) && (
                       <SelectItem value={providerFields[selectedProvider]?.defaultModel ?? ""}>
-                        {providerFields[selectedProvider]?.defaultModel ?? ""}
+                        {providerFields[selectedProvider]?.defaultModel ?? "No models"}
                       </SelectItem>
                     )}
                   </SelectContent>

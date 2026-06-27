@@ -28,6 +28,9 @@ export function AboutModal({ open, onClose }: AboutModalProps) {
           </p>
           <div className="space-y-1 pt-2">
             <p>
+              <span className="text-text-primary">Version:</span> v0.1.0
+            </p>
+            <p>
               <span className="text-text-primary">Author:</span> Morten Johansen
             </p>
             <p>

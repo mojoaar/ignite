@@ -133,3 +133,37 @@ func (s *Store) GetMessages(projectID string) ([]Message, error) {
 }
 
 func (s *Store) Close() error { return s.db.Close() }
+
+type ProviderModel struct {
+	Provider    string `json:"provider"`
+	ModelID     string `json:"model_id"`
+	DisplayName string `json:"display_name"`
+}
+
+func (s *Store) UpsertProviderModel(provider, modelID, displayName string) error {
+	_, err := s.db.Exec(
+		`INSERT OR REPLACE INTO provider_models (provider, model_id, display_name, cached_at) VALUES (?, ?, ?, datetime('now'))`,
+		provider, modelID, displayName,
+	)
+	return err
+}
+
+func (s *Store) ListCachedModels(provider string) ([]ProviderModel, error) {
+	rows, err := s.db.Query(
+		`SELECT provider, model_id, display_name FROM provider_models WHERE provider = ? ORDER BY model_id`,
+		provider,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var models []ProviderModel
+	for rows.Next() {
+		var m ProviderModel
+		if err := rows.Scan(&m.Provider, &m.ModelID, &m.DisplayName); err != nil {
+			return nil, err
+		}
+		models = append(models, m)
+	}
+	return models, rows.Err()
+}

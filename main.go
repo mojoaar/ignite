@@ -16,6 +16,8 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
+const version = "0.1.0"
+
 var menuApp *App
 
 func main() {
@@ -60,7 +62,7 @@ func main() {
 		Mac: &mac.Options{
 			About: &mac.AboutInfo{
 				Title:   "Ignite",
-				Message: "Provisioning with a heartbeat\n\n© 2026 Morten Johansen",
+				Message: "Provisioning with a heartbeat\nv" + version + "\n\n© 2026 Morten Johansen",
 				Icon:    nil,
 			},
 		},

@@ -10,6 +10,7 @@ import (
 	"ignite/internal/templates"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -40,12 +41,53 @@ func (a *App) startup(ctx context.Context) {
 	a.store = store
 
 	a.providers = providers.NewManager()
+
+	a.startModelSync()
 }
 
 func (a *App) shutdown(ctx context.Context) {
 	if a.store != nil {
 		a.store.Close()
 	}
+}
+
+func (a *App) GetCachedModels(providerName string) ([]history.ProviderModel, error) {
+	return a.store.ListCachedModels(providerName)
+}
+
+func (a *App) refreshProviderModels() {
+	for _, name := range []string{"opencode-go", "opencode-zen", "claude", "deepseek"} {
+		key, _ := settings.GetAPIKey(name)
+		var p providers.LLMProvider
+		switch name {
+		case "opencode-go":
+			p = providers.NewOpenCodeProvider(key, "https://opencode.ai/zen/go/v1")
+		case "opencode-zen":
+			p = providers.NewOpenCodeProvider(key, "https://opencode.ai/zen/v1")
+		case "claude":
+			p = providers.NewClaudeProvider(key)
+		case "deepseek":
+			p = providers.NewDeepSeekProvider(key)
+		}
+		models, err := p.ListModels(a.ctx)
+		if err != nil {
+			continue
+		}
+		for _, m := range models {
+			a.store.UpsertProviderModel(name, m.ID, m.DisplayName)
+		}
+	}
+}
+
+func (a *App) startModelSync() {
+	a.refreshProviderModels()
+	go func() {
+		ticker := time.NewTicker(15 * time.Minute)
+		defer ticker.Stop()
+		for range ticker.C {
+			a.refreshProviderModels()
+		}
+	}()
 }
 
 func (a *App) Greet(name string) string {

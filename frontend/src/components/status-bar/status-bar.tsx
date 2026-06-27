@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Settings, Download, CheckCircle, XCircle } from "lucide-react";
-import { ListProviderModels, HasAPIKey } from "@wails/go/main/App";
+import { GetCachedModels, HasAPIKey } from "@wails/go/main/App";
 
 const PROVIDERS = [
   { id: "opencode-go", label: "OpenCode Go" },
@@ -8,13 +8,6 @@ const PROVIDERS = [
   { id: "claude", label: "Claude" },
   { id: "deepseek", label: "DeepSeek" },
 ];
-
-const DEFAULT_MODELS: Record<string, string[]> = {
-  "opencode-go": [],
-  "opencode-zen": [],
-  claude: [],
-  deepseek: [],
-};
 
 interface StatusBarProps {
   provider: string;
@@ -33,7 +26,7 @@ export function StatusBar({
   onOpenSettings,
   onExport,
 }: StatusBarProps) {
-  const [models, setModels] = useState<string[]>(DEFAULT_MODELS[provider] ?? []);
+  const [models, setModels] = useState<{ id: string; label: string }[]>([]);
   const [connected, setConnected] = useState<boolean | null>(null);
 
   useEffect(() => {
@@ -43,17 +36,18 @@ export function StatusBar({
   }, [provider]);
 
   useEffect(() => {
-    ListProviderModels(provider)
+    GetCachedModels(provider)
       .then((m) => {
         if (m && m.length > 0) {
-          setModels(m.map((x: { id: string }) => x.id));
+          setModels((m as { model_id: string; display_name: string }[]).map((x) => ({
+            id: x.model_id,
+            label: x.display_name || x.model_id,
+          })));
         } else {
-          setModels(DEFAULT_MODELS[provider] ?? []);
+          setModels([]);
         }
       })
-      .catch(() => {
-        setModels(DEFAULT_MODELS[provider] ?? []);
-      });
+      .catch(() => setModels([]));
   }, [provider]);
 
   return (
@@ -76,8 +70,8 @@ export function StatusBar({
         className="h-7 rounded border border-border bg-background px-2 font-mono text-xs text-text-primary focus:border-accent focus:outline-none"
       >
         {models.map((m) => (
-          <option key={m} value={m}>
-            {m}
+          <option key={m.id} value={m.id}>
+            {m.label}
           </option>
         ))}
       </select>
