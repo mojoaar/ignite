@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){var m=localStorage.getItem("ignite-mode");if(m==="light")document.documentElement.setAttribute("data-mode","light");})()</script>
 <title>AI Providers — Ignite Docs</title>
 <meta name="description" content="Configure AI providers in Ignite: OpenCode Go, OpenCode Zen, Claude, DeepSeek. Model lists, fallback behavior, and API key setup.">
 <link rel="canonical" href="https://ignite.johansen.foo/docs/providers.html">
@@ -17,7 +18,7 @@
       <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><rect width="24" height="24" rx="3" fill="#0c0c14"/><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" fill="#ffb450"/></svg>
       Ignite
     </a>
-    <div class="links"><a href="/">Home</a><a href="/docs/">Docs</a><a href="https://github.com/mojoaar/ignite" target="_blank" rel="noopener">GitHub</a></div>
+    <div class="links"><a href="/">Home</a><a href="/docs/">Docs</a> <button class="mode-btn" id="modeToggle" title="Toggle theme" aria-label="Toggle dark/light mode">☀</button><a href="https://github.com/mojoaar/ignite" target="_blank" rel="noopener">GitHub</a></div>
   </div>
 </nav>
 
@@ -96,5 +97,6 @@
     <p style="margin-top:8px;opacity:0.5;">&copy; 2026 Morten Johansen &middot; AGPL-3.0</p>
   </div>
 </footer>
+<script>(function(){var btn=document.getElementById("modeToggle");var html=document.documentElement;function setMode(mode){html.setAttribute("data-mode",mode);localStorage.setItem("ignite-mode",mode);btn.textContent=mode==="light"?"☀":"☾"}btn.addEventListener("click",function(){setMode(html.getAttribute("data-mode")==="light"?"dark":"light")});setMode(html.getAttribute("data-mode")||"dark")})();</script>
 </body>
 </html>

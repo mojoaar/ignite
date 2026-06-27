@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>(function(){var m=localStorage.getItem("ignite-mode");if(m==="light")document.documentElement.setAttribute("data-mode","light");})()</script>
 <title>Documentation — Ignite</title>
 <meta name="description" content="Ignite documentation. Learn how to install, configure providers, run provisioning interviews, and manage settings.">
 <link rel="canonical" href="https://ignite.johansen.foo/docs/">
@@ -21,7 +22,7 @@
     <div class="links">
       <a href="/">Home</a>
       <a href="/docs/" class="active">Docs</a>
-      <a href="https://github.com/mojoaar/ignite" target="_blank" rel="noopener">GitHub</a>
+       <button class="mode-btn" id="modeToggle" title="Toggle theme" aria-label="Toggle dark/light mode">☀</button><a href="https://github.com/mojoaar/ignite" target="_blank" rel="noopener">GitHub</a>
     </div>
   </div>
 </nav>
@@ -72,5 +73,6 @@
     <p style="margin-top:8px;opacity:0.5;">&copy; 2026 Morten Johansen &middot; AGPL-3.0</p>
   </div>
 </footer>
+<script>(function(){var btn=document.getElementById("modeToggle");var html=document.documentElement;function setMode(mode){html.setAttribute("data-mode",mode);localStorage.setItem("ignite-mode",mode);btn.textContent=mode==="light"?"☀":"☾"}btn.addEventListener("click",function(){setMode(html.getAttribute("data-mode")==="light"?"dark":"light")});setMode(html.getAttribute("data-mode")||"dark")})();</script>
 </body>
 </html>
