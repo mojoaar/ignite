@@ -9,6 +9,8 @@ const PROVIDERS = [
   { id: "deepseek", label: "DeepSeek" },
 ];
 
+const PHASE_LABELS = ["Identity", "Tech Stack", "Features", "Roadmap", "Generation"];
+
 interface StatusBarProps {
   provider: string;
   model: string;
@@ -32,6 +34,14 @@ export function StatusBar({
 }: StatusBarProps) {
   const [models, setModels] = useState<{ id: string; label: string }[]>([]);
   const [connected, setConnected] = useState<boolean | null>(null);
+
+  const phaseIdx = (() => {
+    const msgs = useChatStore.getState().messages;
+    if (msgs.length === 0) return -1;
+    const lastPhase = msgs[msgs.length - 1].phase || "";
+    const idx = PHASE_LABELS.findIndex((l) => l.toLowerCase() === lastPhase);
+    return idx >= 0 ? idx : Math.min(Math.floor(msgs.length / 2), 4);
+  })();
 
   useEffect(() => {
     HasAPIKey(provider)
@@ -64,6 +74,11 @@ export function StatusBar({
       {projectDir && (
         <span className="font-mono text-[11px] text-text-secondary truncate max-w-[200px]" title={projectDir}>
           {projectDir.replace(/^\/Users\/[^/]+\//, "~/")}
+        </span>
+      )}
+      {phaseIdx >= 0 && (
+        <span className="font-mono text-[10px] text-accent-light whitespace-nowrap">
+          Phase {phaseIdx + 1}/5: {PHASE_LABELS[phaseIdx]}
         </span>
       )}
       <select

@@ -24,6 +24,12 @@ function App() {
   const [projectDir, setProjectDir] = useState("");
   const [avatar, setAvatar] = useState("");
   const [userName, setUserName] = useState("");
+  const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
+
+  const showToast = (msg: string, type: "success" | "error" = "success") => {
+    setToast({ msg, type });
+    setTimeout(() => setToast(null), 5000);
+  };
 
   useEffect(() => {
     GetSettings().then((s) => {
@@ -85,9 +91,9 @@ function App() {
     const name = useChatStore.getState().projects.find((p) => p.id === activeProjectId)?.name || "project";
     try {
       await GenerateProjectFiles(provider, model, name, msgs.map((m) => ({ role: m.role, content: m.content })));
-      alert("Files generated in ~/Development/" + name + "/");
+      showToast("Files generated in ~/Development/" + name + "/", "success");
     } catch (e) {
-      alert("Generation failed: " + (e instanceof Error ? e.message : String(e)));
+      showToast("Generation failed", "error");
     }
   }, [activeProjectId, provider, model]);
 
@@ -135,6 +141,11 @@ function App() {
         }}
       />
     </div>
+    {toast && (
+      <div className={`fixed bottom-16 left-1/2 -translate-x-1/2 z-50 rounded-lg px-4 py-2 font-mono text-sm text-white animate-slide-up ${toast.type === "error" ? "bg-error" : "bg-success"}`}>
+        {toast.msg}
+      </div>
+    )}
     </ErrorBoundary>
   );
 }
