@@ -113,7 +113,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
     GetSettings()
       .then((s) => {
         setSettings(s);
-        setSelectedProvider(s.default_provider || "opencode-go");
+        setSelectedProvider(PROVIDER_IDS.includes(s.default_provider) ? s.default_provider : "opencode-go");
         const fields: Record<string, ProviderFields> = {};
         for (const pid of PROVIDER_IDS) {
           fields[pid] = {

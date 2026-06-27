@@ -35,6 +35,10 @@ func (a *App) startup(ctx context.Context) {
 	}
 	a.cfg = cfg
 
+	if _, ok := a.cfg.Providers[a.cfg.DefaultProvider]; !ok {
+		a.cfg.DefaultProvider = "opencode-go"
+	}
+
 	if cfg.WindowWidth == 0 {
 		cfg.WindowWidth = 1024
 	}
