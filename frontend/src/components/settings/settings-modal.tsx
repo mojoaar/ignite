@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Eye, EyeOff, Check, Loader2, XCircle, Folder } from "lucide-react";
 import {
   Dialog,
@@ -82,6 +82,8 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const [saveError, setSaveError] = useState("");
   const [selectedProvider, setSelectedProvider] = useState("opencode-go");
   const [providerModels, setProviderModels] = useState<Record<string, { id: string; name: string }[]>>({});
+  const settingsRef = useRef(settings);
+  settingsRef.current = settings;
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
@@ -150,7 +152,8 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   );
 
   const handleSave = async () => {
-    if (!settings) return;
+    const s = settingsRef.current;
+    if (!s) return;
     setSaving(true);
     setSaveError("");
     try {
@@ -165,7 +168,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         newProviders[pid] = { endpoint: f.endpoint, default_model: f.defaultModel };
       }
       await SaveSettings({
-        ...settings,
+        ...s,
         default_provider: selectedProvider,
         providers: newProviders,
       } as Parameters<typeof SaveSettings>[0]);
