@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useChatStore } from "@/lib/store/chat";
-import { SendMessageStream, AddMessage, AnalyzePath, SetProjectMeta } from "@wails/go/main/App";
+import { SendMessageStream, AddMessage, AnalyzePath, AnalyzePathContent, SetProjectMeta } from "@wails/go/main/App";
 import { EventsOn, EventsOff } from "@wails/runtime";
 
 const PATH_PATTERN = /(~\/\S+|(?:\/Users\/|\/home\/|\/tmp\/)\S+)/g;
@@ -64,14 +64,21 @@ export function useConversation() {
         const results = await Promise.allSettled(
           paths.map((p) => AnalyzePath(p))
         );
+        const contentResults = await Promise.allSettled(
+          paths.map((p) => AnalyzePathContent(p))
+        );
         scans = results
           .map((r) => (r.status === "fulfilled" ? r.value : ""))
           .filter(Boolean)
           .join("\n\n---\n\n");
+        const contents = contentResults
+          .map((r) => (r.status === "fulfilled" ? r.value : ""))
+          .filter(Boolean)
+          .join("\n\n");
         if (scans) {
           apiMessages.splice(-1, 0, {
             role: "system",
-            content: `Path context from user message:\n\n${scans}`,
+            content: `Path context from user message:\n\n${scans}${contents ? "\n\nFile contents:\n\n" + contents : ""}`,
           });
         }
       }

@@ -279,6 +279,10 @@ func (a *App) AnalyzePath(path string) string {
 	return scanner.AnalyzePath(path)
 }
 
+func (a *App) AnalyzePathContent(path string) string {
+	return scanner.AnalyzePathContent(path)
+}
+
 func (a *App) ResizeWindow(width, height int) {
 	runtime.WindowSetSize(a.ctx, width, height)
 }

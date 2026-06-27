@@ -235,3 +235,45 @@ func extractRequireBlock(content string) string {
 	}
 	return rb.String()
 }
+
+func AnalyzePathContent(path string) string {
+	expanded := expandPath(path)
+	info, err := os.Stat(expanded)
+	if err != nil {
+		return ""
+	}
+
+	if !info.IsDir() {
+		data, err := os.ReadFile(expanded)
+		if err != nil {
+			return ""
+		}
+		return string(data)
+	}
+
+	keyFiles := []string{
+		"README.md", "readme.md", "README", "readme",
+		"package.json", "go.mod", "Cargo.toml", "pyproject.toml",
+		"wails.json", "agents.md", "plan.md", "AGENTS.md", "PLAN.md",
+		"docker-compose.yml", "Dockerfile", "Makefile",
+	}
+
+	var sb strings.Builder
+	for _, f := range keyFiles {
+		fp := filepath.Join(expanded, f)
+		data, err := os.ReadFile(fp)
+		if err != nil {
+			continue
+		}
+		maxLen := 3000
+		content := string(data)
+		if len(content) > maxLen {
+			content = content[:maxLen] + "\n... (truncated)"
+		}
+		sb.WriteString(fmt.Sprintf("=== %s ===\n%s\n\n", f, content))
+	}
+	if sb.Len() == 0 {
+		return ""
+	}
+	return sb.String()
+}

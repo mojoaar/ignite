@@ -9,6 +9,8 @@ export function AddMessage(arg1:history.Message):Promise<void>;
 
 export function AnalyzePath(arg1:string):Promise<string>;
 
+export function AnalyzePathContent(arg1:string):Promise<string>;
+
 export function CreateProject(arg1:history.Project):Promise<void>;
 
 export function DeleteProject(arg1:string):Promise<void>;
