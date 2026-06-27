@@ -27,7 +27,7 @@
 | Icons              | lucide-react (Flame logo)                              |
 | Fonts              | JetBrains Mono, Fira Code, IBM Plex Mono, Roboto Mono, Source Code Pro (bundled via @fontsource) |
 | Backend            | Go 1.24+                                              |
-| LLM Providers      | OpenCode Go, OpenCode Zen, Claude, DeepSeek           |
+| LLM Providers      | OpenCode Go, OpenCode Zen, DeepSeek               |
 | Template Engine    | Go text/template + sprig v3 + embed                   |
 | Database           | SQLite (modernc.org/sqlite, pure Go)                  |
 | Secret Storage     | OS keychain (go-keyring)                              |
@@ -89,8 +89,7 @@ ignite/
 │   ├── providers/                  # LLM adapters
 │   │   ├── interface.go            # LLMProvider interface
 │   │   ├── opencode.go             # OpenCode (Go + Zen)
-│   │   ├── claude.go               # Claude (Anthropic)
-│   │   └── deepseek.go             # DeepSeek
+│   │   ├── deepseek.go             # DeepSeek
 │   ├── settings/
 │   │   ├── config.go               # config.json load/save
 │   │   └── keychain.go             # OS keychain wrapper

@@ -15,7 +15,7 @@
 | **Fonts**          | JetBrains Mono, Fira Code, IBM Plex Mono, Source Code Pro, Roboto Mono (bundled offline) |
 | **Icons**          | lucide-react                                               |
 | **Backend**        | Go 1.24+                                                   |
-| **LLM Providers**  | OpenCode Go, OpenCode Zen, Claude, DeepSeek                       |
+| **LLM Providers**  | OpenCode Go, OpenCode Zen, DeepSeek                   |
 | **Templates**      | Go text/template + sprig v3 + embed                        |
 | **Database**       | SQLite (modernc.org/sqlite, pure Go, no CGO)               |
 | **Logging**        | zerolog                                                    |
@@ -50,7 +50,6 @@
 - [x] `internal/providers/` — LLMProvider interface (Chat/ChatStream/ListModels/ValidateKey)
 - [x] OpenCode Go adapter — `opencode.ai/zen/go/v1`, SSE streaming via bufio.Scanner
 - [x] OpenCode Zen adapter — `opencode.ai/zen/v1`, identical streaming
-- [x] Claude adapter — Anthropic Messages API, x-api-key auth, content_block_delta streaming
 - [x] DeepSeek adapter — OpenAI-compatible API, SSE streaming, hardcoded model fallback
 - [x] `internal/history/sqlite.go` — projects + conversations + provider_models tables, WAL mode
 - [x] `internal/templates/` — Go text/template + sprig, 4 embedded .tmpl files
