@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Plus, Flame, Trash2 } from "lucide-react";
+import { Plus, Flame, Trash2, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useChatStore } from "@/lib/store/chat";
 import { cn } from "@/lib/utils";
@@ -150,12 +150,18 @@ export function Sidebar() {
               />
             ) : (
               <span
-                className="truncate font-mono text-xs cursor-text"
-                onDoubleClick={() => startRename(project.id, project.name || "Untitled")}
+                className="truncate font-mono text-xs"
               >
                 {project.name || "Untitled"}
               </span>
             )}
+            <button
+              onClick={(e) => { e.stopPropagation(); startRename(project.id, project.name || "Untitled"); }}
+              className="shrink-0 rounded p-0.5 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-surface-hover hover:text-accent"
+              title="Rename project"
+            >
+              <Pencil className="h-3 w-3" />
+            </button>
             <button
               onClick={(e) => handleDeleteProject(project.id, e)}
               className="ml-auto shrink-0 rounded p-0.5 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-surface-hover hover:text-error"
