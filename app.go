@@ -84,10 +84,7 @@ func (a *App) ensureProviderConfigs() {
 		changed = true
 	}
 	if changed {
-		fmt.Println("[IGNITE] ensureProviderConfigs: saving config")
 		settings.SaveConfig(a.cfg)
-	} else {
-		fmt.Println("[IGNITE] ensureProviderConfigs: no changes, skip save")
 	}
 }
 

@@ -1,7 +1,7 @@
 # Ignite — Implementation Plan
 > Provisioning with a heartbeat
 
-**Version:** v0.1.2
+**Version:** v0.1.4
 
 **Tech Stack:**
 
@@ -191,6 +191,56 @@
 | Model APIs change format      | Fallback model lists for all providers                 |
 
 ---
+
+## Phase 7: Complete the Core Loop
+
+> Wire the template engine into the conversation flow. Generate the 4 output files from interview context.
+
+- [ ] Wire `Engine.Generate(ctx)` from backend on user trigger
+- [ ] Add "Generate Files" button in UI (visible after Phase 4)
+- [ ] Build `ProjectContext` from conversation via LLM extraction call
+- [ ] Call `SaveProjectFiles(projectDir, files)` after generation
+- [ ] Show "Files saved to ~/Development/project/" confirmation
+- [ ] Track phases in `conversations.phase` column
+- [ ] Phase-dependent system prompts (different per phase)
+- [ ] Phase progress indicator in chat UI
+- [ ] Populate project `path`, `provider`, `model` on creation
+
+### Verification
+- [ ] "Generate Files" produces 4 files on disk
+- [ ] Files contain correct interview data
+- [ ] Phase tracking persists across restarts
+
+---
+
+## Phase 8: Hardening
+
+> Fixes from the comprehensive code review audit on 2026-06-27.
+
+- [x] Frontend EventsOn memory leak — uses EventsOff (App.tsx, sidebar.tsx)
+- [x] HTTP client timeouts — 120s on all providers
+- [x] `sync.RWMutex` on `a.cfg` reads/writes
+- [x] `DeleteProject` — SQLite transaction
+- [x] UTF-8 safe truncation in scanner
+- [x] JSON marshal errors handled (opencode.go, deepseek.go)
+- [x] Config not rewritten on every startup
+- [x] Invalid `default_provider` validated on startup
+- [x] `LoadConfig` merges with `DefaultConfig`
+- [x] Auto-select first cached model when none saved
+- [x] Settings save uses `useRef` for avatar/name
+- [ ] React ErrorBoundary component
+- [ ] Error toast/notification system
+- [ ] Scanner tests
+- [ ] `Role` union type in chat.ts
+
+### Verification
+- [x] Config persists across restarts
+- [x] Events properly cleaned up
+- [ ] Scanner tests pass
+- [ ] ErrorBoundary catches crashes
+
+---
+
 ## Changelog
 
 | Version | Date       | Changes                                                    |
