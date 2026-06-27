@@ -132,13 +132,25 @@ func (a *App) SetAPIKey(provider string, key string) error {
 
 func (a *App) HasAPIKey(provider string) bool {
 	_, err := settings.GetAPIKey(provider)
-	return err == nil
+	if err == nil {
+		return true
+	}
+	if provider == "opencode-go" {
+		_, err = settings.GetAPIKey("opencode-zen")
+		return err == nil
+	}
+	if provider == "opencode-zen" {
+		_, err = settings.GetAPIKey("opencode-go")
+		return err == nil
+	}
+	return false
 }
 
 func (a *App) CreateProject(p history.Project) error { return a.store.CreateProject(p) }
 func (a *App) UpdateProject(p history.Project) error { return a.store.UpdateProject(p) }
 func (a *App) ListProjects() ([]history.Project, error) { return a.store.ListProjects() }
 func (a *App) GetProject(id string) (*history.Project, error) { return a.store.GetProject(id) }
+func (a *App) DeleteProject(id string) error              { return a.store.DeleteProject(id) }
 func (a *App) AddMessage(m history.Message) error          { return a.store.AddMessage(m) }
 func (a *App) GetMessages(projectID string) ([]history.Message, error) {
 	return a.store.GetMessages(projectID)

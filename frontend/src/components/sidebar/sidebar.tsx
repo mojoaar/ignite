@@ -1,9 +1,9 @@
 import { useEffect } from "react";
-import { Plus, Flame } from "lucide-react";
+import { Plus, Flame, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useChatStore } from "@/lib/store/chat";
 import { cn } from "@/lib/utils";
-import { ListProjects, CreateProject, GetProject, GetMessages } from "@wails/go/main/App";
+import { ListProjects, CreateProject, GetProject, GetMessages, DeleteProject } from "@wails/go/main/App";
 import { EventsOn } from "@wails/runtime";
 
 export function Sidebar() {
@@ -11,6 +11,7 @@ export function Sidebar() {
   const activeProjectId = useChatStore((s) => s.activeProjectId);
   const setProjects = useChatStore((s) => s.setProjects);
   const setActiveProject = useChatStore((s) => s.setActiveProject);
+  const removeProject = useChatStore((s) => s.removeProject);
   const setMessages = useChatStore((s) => s.setMessages);
 
   useEffect(() => {
@@ -60,6 +61,16 @@ export function Sidebar() {
     } catch {}
   };
 
+  const handleDeleteProject = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await DeleteProject(id);
+      removeProject(id);
+      const updated = await ListProjects();
+      setProjects(updated ?? []);
+    } catch {}
+  };
+
   return (
     <aside className="flex h-full w-[260px] shrink-0 flex-col border-r border-border bg-surface">
       <div className="flex items-center gap-2 px-4 py-4">
@@ -82,11 +93,11 @@ export function Sidebar() {
           </p>
         )}
         {projects.map((project) => (
-          <button
+          <div
             key={project.id}
             onClick={() => handleSelectProject(project.id)}
             className={cn(
-              "flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors",
+              "group flex w-full cursor-pointer items-center gap-2 rounded-md px-3 py-2 text-left text-sm transition-colors",
               project.id === activeProjectId
                 ? "bg-accent/15 text-text-primary"
                 : "text-text-secondary hover:bg-surface-hover hover:text-text-primary"
@@ -96,7 +107,14 @@ export function Sidebar() {
             <span className="truncate font-mono text-xs">
               {project.name || "Untitled"}
             </span>
-          </button>
+            <button
+              onClick={(e) => handleDeleteProject(project.id, e)}
+              className="ml-auto shrink-0 rounded p-0.5 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-surface-hover hover:text-error"
+              title="Delete project"
+            >
+              <Trash2 className="h-3 w-3" />
+            </button>
+          </div>
         ))}
       </div>
 

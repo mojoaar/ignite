@@ -132,6 +132,15 @@ func (s *Store) GetMessages(projectID string) ([]Message, error) {
 	return messages, rows.Err()
 }
 
+func (s *Store) DeleteProject(id string) error {
+	_, err := s.db.Exec(`DELETE FROM conversations WHERE project_id = ?`, id)
+	if err != nil {
+		return err
+	}
+	_, err = s.db.Exec(`DELETE FROM projects WHERE id = ?`, id)
+	return err
+}
+
 func (s *Store) Close() error { return s.db.Close() }
 
 type ProviderModel struct {

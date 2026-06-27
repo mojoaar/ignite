@@ -30,6 +30,7 @@ interface ChatState {
   isStreaming: boolean;
 
   setProjects: (projects: Project[]) => void;
+  removeProject: (id: string) => void;
   setActiveProject: (id: string) => void;
   addMessage: (msg: Message) => void;
   setMessages: (msgs: Message[]) => void;
@@ -46,6 +47,12 @@ export const useChatStore = create<ChatState>((set) => ({
   isStreaming: false,
 
   setProjects: (projects) => set({ projects }),
+  removeProject: (id) =>
+    set((s) => ({
+      projects: s.projects.filter((p) => p.id !== id),
+      activeProjectId: s.activeProjectId === id ? null : s.activeProjectId,
+      messages: s.activeProjectId === id ? [] : s.messages,
+    })),
   setActiveProject: (id) => set({ activeProjectId: id, messages: [], streamingContent: "" }),
   addMessage: (msg) =>
     set((s) => ({ messages: [...s.messages, msg] })),

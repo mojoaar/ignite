@@ -14,6 +14,10 @@ export function CreateProject(arg1) {
   return window['go']['main']['App']['CreateProject'](arg1);
 }
 
+export function DeleteProject(arg1) {
+  return window['go']['main']['App']['DeleteProject'](arg1);
+}
+
 export function ExportChat(arg1) {
   return window['go']['main']['App']['ExportChat'](arg1);
 }

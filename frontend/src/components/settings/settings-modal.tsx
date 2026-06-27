@@ -276,12 +276,11 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                 <div className="relative">
                   <Input
                     id="key"
-                    type={(providerFields[selectedProvider]?.hasKey && !providerFields[selectedProvider]?.apiKey) ? "password" : providerFields[selectedProvider]?.showKey ? "text" : "password"}
+                    type={providerFields[selectedProvider]?.hasKey && !providerFields[selectedProvider]?.apiKey ? "password" : providerFields[selectedProvider]?.showKey ? "text" : "password"}
                     placeholder={providerFields[selectedProvider]?.hasKey ? "••••••••" : "Enter API key"}
                     value={providerFields[selectedProvider]?.apiKey ?? ""}
                     onChange={(e) => setField(selectedProvider, "apiKey", e.target.value)}
-                    disabled={providerFields[selectedProvider]?.hasKey && !providerFields[selectedProvider]?.apiKey}
-                    className="bg-surface font-mono text-sm pr-16 disabled:opacity-70"
+                    className="bg-surface font-mono text-sm pr-16"
                   />
                   <div className="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5">
                     {(!providerFields[selectedProvider]?.hasKey || providerFields[selectedProvider]?.apiKey) && (

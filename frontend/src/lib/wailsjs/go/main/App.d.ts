@@ -11,6 +11,8 @@ export function AnalyzePath(arg1:string):Promise<string>;
 
 export function CreateProject(arg1:history.Project):Promise<void>;
 
+export function DeleteProject(arg1:string):Promise<void>;
+
 export function ExportChat(arg1:Array<history.Message>):Promise<string>;
 
 export function GetCachedModels(arg1:string):Promise<Array<history.ProviderModel>>;
