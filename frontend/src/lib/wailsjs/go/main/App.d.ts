@@ -13,6 +13,8 @@ export function CreateProject(arg1:history.Project):Promise<void>;
 
 export function ExportChat(arg1:Array<history.Message>):Promise<string>;
 
+export function GetCachedModels(arg1:string):Promise<Array<history.ProviderModel>>;
+
 export function GetMessages(arg1:string):Promise<Array<history.Message>>;
 
 export function GetProject(arg1:string):Promise<history.Project>;

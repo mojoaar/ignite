@@ -94,6 +94,10 @@ func (a *App) Greet(name string) string {
 	return fmt.Sprintf("Hello %s, Ignite is alive!", name)
 }
 
+func (a *App) GetVersion() string {
+	return version
+}
+
 func (a *App) GetSettings() *settings.Config { return a.cfg }
 
 func (a *App) SaveSettings(cfg settings.Config) error {

@@ -48,6 +48,22 @@ export namespace history {
 	        this.updated_at = source["updated_at"];
 	    }
 	}
+	export class ProviderModel {
+	    provider: string;
+	    model_id: string;
+	    display_name: string;
+	
+	    static createFrom(source: any = {}) {
+	        return new ProviderModel(source);
+	    }
+	
+	    constructor(source: any = {}) {
+	        if ('string' === typeof source) source = JSON.parse(source);
+	        this.provider = source["provider"];
+	        this.model_id = source["model_id"];
+	        this.display_name = source["display_name"];
+	    }
+	}
 
 }
 

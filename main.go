@@ -16,7 +16,7 @@ import (
 //go:embed all:frontend/dist
 var assets embed.FS
 
-const version = "0.1.0"
+const version = "0.1.1"
 
 var menuApp *App
 

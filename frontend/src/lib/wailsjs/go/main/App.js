@@ -18,6 +18,10 @@ export function ExportChat(arg1) {
   return window['go']['main']['App']['ExportChat'](arg1);
 }
 
+export function GetCachedModels(arg1) {
+  return window['go']['main']['App']['GetCachedModels'](arg1);
+}
+
 export function GetMessages(arg1) {
   return window['go']['main']['App']['GetMessages'](arg1);
 }

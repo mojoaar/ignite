@@ -144,6 +144,14 @@ type claudeModelsResponse struct {
 }
 
 func (p *ClaudeProvider) ListModels(ctx context.Context) ([]Model, error) {
+	models, err := p.listModelsFromAPI(ctx)
+	if err != nil || len(models) == 0 {
+		return p.defaultModels(), nil
+	}
+	return models, nil
+}
+
+func (p *ClaudeProvider) listModelsFromAPI(ctx context.Context) ([]Model, error) {
 	req, err := http.NewRequestWithContext(ctx, "GET", p.endpoint+"/models?limit=100", nil)
 	if err != nil {
 		return nil, fmt.Errorf("claude: create request: %w", err)
@@ -166,11 +174,19 @@ func (p *ClaudeProvider) ListModels(ctx context.Context) ([]Model, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, fmt.Errorf("claude: decode: %w", err)
 	}
-	models := make([]Model, len(result.Data))
+	out := make([]Model, len(result.Data))
 	for i, m := range result.Data {
-		models[i] = Model{ID: m.ID, DisplayName: m.DisplayName}
+		out[i] = Model{ID: m.ID, DisplayName: m.DisplayName}
 	}
-	return models, nil
+	return out, nil
+}
+
+func (p *ClaudeProvider) defaultModels() []Model {
+	return []Model{
+		{ID: "claude-sonnet-4-20250514", DisplayName: "Claude Sonnet 4"},
+		{ID: "claude-opus-4-20250514", DisplayName: "Claude Opus 4"},
+		{ID: "claude-haiku-3.5", DisplayName: "Claude Haiku 3.5"},
+	}
 }
 
 func (p *ClaudeProvider) ValidateKey(ctx context.Context) error {

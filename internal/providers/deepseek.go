@@ -121,8 +121,8 @@ func (p *DeepSeekProvider) ChatStream(ctx context.Context, model string, message
 
 func (p *DeepSeekProvider) ListModels(ctx context.Context) ([]Model, error) {
 	return []Model{
-		{ID: "deepseek-chat", DisplayName: "DeepSeek Chat"},
-		{ID: "deepseek-reasoner", DisplayName: "DeepSeek Reasoner"},
+		{ID: "deepseek-v4-flash", DisplayName: "DeepSeek Flash"},
+		{ID: "deepseek-v4-pro", DisplayName: "DeepSeek Pro"},
 	}, nil
 }
 

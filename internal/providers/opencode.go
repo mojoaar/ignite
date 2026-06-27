@@ -131,6 +131,14 @@ func (p *OpenCodeProvider) ChatStream(ctx context.Context, model string, message
 }
 
 func (p *OpenCodeProvider) ListModels(ctx context.Context) ([]Model, error) {
+	models, err := p.listModelsFromAPI(ctx)
+	if err != nil || len(models) == 0 {
+		return p.defaultModels(), nil
+	}
+	return models, nil
+}
+
+func (p *OpenCodeProvider) listModelsFromAPI(ctx context.Context) ([]Model, error) {
 	req, _ := http.NewRequestWithContext(ctx, "GET", p.endpoint+"/models", nil)
 	req.Header.Set("Authorization", "Bearer "+p.apiKey)
 
@@ -148,11 +156,28 @@ func (p *OpenCodeProvider) ListModels(ctx context.Context) ([]Model, error) {
 	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
 		return nil, fmt.Errorf("opencode: decode: %w", err)
 	}
-	models := make([]Model, len(result.Data))
+	out := make([]Model, len(result.Data))
 	for i, m := range result.Data {
-		models[i] = Model{ID: m.ID, DisplayName: m.ID}
+		out[i] = Model{ID: m.ID, DisplayName: m.ID}
 	}
-	return models, nil
+	return out, nil
+}
+
+func (p *OpenCodeProvider) defaultModels() []Model {
+	return []Model{
+		{ID: "gpt-4o", DisplayName: "GPT-4o"},
+		{ID: "gpt-4o-mini", DisplayName: "GPT-4o Mini"},
+		{ID: "gpt-4.1", DisplayName: "GPT-4.1"},
+		{ID: "gpt-4.1-nano", DisplayName: "GPT-4.1 Nano"},
+		{ID: "gpt-4.1-mini", DisplayName: "GPT-4.1 Mini"},
+		{ID: "claude-sonnet-4", DisplayName: "Claude Sonnet 4"},
+		{ID: "claude-opus-4", DisplayName: "Claude Opus 4"},
+		{ID: "claude-haiku-3.5", DisplayName: "Claude Haiku 3.5"},
+		{ID: "deepseek-v4-pro", DisplayName: "DeepSeek Pro"},
+		{ID: "deepseek-v4-flash", DisplayName: "DeepSeek Flash"},
+		{ID: "gemini-2.5-pro", DisplayName: "Gemini 2.5 Pro"},
+		{ID: "gemini-2.5-flash", DisplayName: "Gemini 2.5 Flash"},
+	}
 }
 
 func (p *OpenCodeProvider) ValidateKey(ctx context.Context) error {
