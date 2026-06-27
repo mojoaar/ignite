@@ -58,6 +58,20 @@ export function useConversation() {
         { role: "user", content },
       ];
 
+      if (messages.length === 0) {
+        const allProjects = useChatStore.getState().projects;
+        const others = allProjects.filter((p) => p.id !== activeProjectId && p.name);
+        if (others.length > 0) {
+          const recent = others.slice(0, 5).map((p) =>
+            `- ${p.name}${p.tagline ? ": " + p.tagline : ""}`
+          ).join("\n");
+          apiMessages.splice(1, 0, {
+            role: "system",
+            content: `User's previous projects:\n${recent}\n\nReference these when relevant to the user's current project.`,
+          });
+        }
+      }
+
       const paths = extractPaths(content);
       let scans = "";
       if (paths.length > 0) {
