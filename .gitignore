@@ -6,3 +6,5 @@ Ignite
 scripts/local-deploy.sh
 .DS_Store
 *.log
+.env
+coverage/
