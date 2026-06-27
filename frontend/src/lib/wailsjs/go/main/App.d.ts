@@ -17,6 +17,8 @@ export function DeleteProject(arg1:string):Promise<void>;
 
 export function ExportChat(arg1:Array<history.Message>):Promise<string>;
 
+export function FetchURL(arg1:string):Promise<string>;
+
 export function GenerateProjectFiles(arg1:string,arg2:string,arg3:string,arg4:Array<providers.Message>):Promise<templates.ProjectFiles>;
 
 export function GetCachedModels(arg1:string):Promise<Array<history.ProviderModel>>;

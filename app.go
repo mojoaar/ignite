@@ -9,6 +9,8 @@ import (
 	"ignite/internal/scanner"
 	"ignite/internal/settings"
 	"ignite/internal/templates"
+	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -302,6 +304,43 @@ func (a *App) AnalyzePath(path string) string {
 
 func (a *App) AnalyzePathContent(path string) string {
 	return scanner.AnalyzePathContent(path)
+}
+
+func (a *App) FetchURL(url string) string {
+	if !strings.HasPrefix(url, "https://") && !strings.HasPrefix(url, "http://") {
+		return ""
+	}
+	resp, err := http.Get(url)
+	if err != nil {
+		return ""
+	}
+	defer resp.Body.Close()
+	body, err := io.ReadAll(io.LimitReader(resp.Body, 50000))
+	if err != nil {
+		return ""
+	}
+	text := string(body)
+	text = stripHTML(text)
+	if len(text) > 5000 {
+		text = text[:5000] + "..."
+	}
+	return text
+}
+
+func stripHTML(s string) string {
+	var b strings.Builder
+	inTag := false
+	for _, r := range s {
+		if r == '<' {
+			inTag = true
+		} else if r == '>' {
+			inTag = false
+			b.WriteRune(' ')
+		} else if !inTag {
+			b.WriteRune(r)
+		}
+	}
+	return strings.Join(strings.Fields(b.String()), " ")
 }
 
 func (a *App) GenerateProjectFiles(providerName, model, projectName string, messages []providers.Message) (*templates.ProjectFiles, error) {

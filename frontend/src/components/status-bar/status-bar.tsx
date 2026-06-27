@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Settings, Download, CheckCircle, XCircle, FileText } from "lucide-react";
 import { GetCachedModels, HasAPIKey } from "@wails/go/main/App";
+import { useChatStore } from "@/lib/store/chat";
 
 const PROVIDERS = [
   { id: "opencode-go", label: "OpenCode Go" },
@@ -115,7 +116,14 @@ export function StatusBar({
           className="rounded p-1 text-text-secondary hover:bg-surface-hover hover:text-text-primary"
           title="Generate project files"
         >
-          <FileText className="h-4 w-4" />
+          <FileText className={(() => {
+            const msgs = useChatStore.getState().messages;
+            if (msgs.length === 0) return "h-4 w-4";
+            const lastPhase = msgs[msgs.length - 1].phase || "";
+            if (lastPhase === "identity") return "h-4 w-4 text-error";
+            if (lastPhase === "tech-stack" || lastPhase === "features") return "h-4 w-4 text-yellow-500";
+            return "h-4 w-4 text-success";
+          })()} />
         </button>
       )}
       <button

@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useChatStore } from "@/lib/store/chat";
-import { SendMessage, SendMessageStream, AddMessage, AnalyzePath, AnalyzePathContent, SetProjectMeta } from "@wails/go/main/App";
+import { SendMessage, SendMessageStream, AddMessage, AnalyzePath, AnalyzePathContent, FetchURL, SetProjectMeta } from "@wails/go/main/App";
 import { EventsOn, EventsOff } from "@wails/runtime";
 
 const PATH_PATTERN = /(~\/\S+|(?:\/Users\/|\/home\/|\/tmp\/)\S+)/g;
@@ -82,6 +82,17 @@ export function useConversation() {
 
       const paths = extractPaths(content);
       let scans = "";
+      const urlMatches = content.match(/https?:\/\/\S+/g);
+      let urlContent = "";
+      if (urlMatches) {
+        const urlResults = await Promise.allSettled(
+          [...new Set(urlMatches)].map((u) => FetchURL(u))
+        );
+        urlContent = urlResults
+          .map((r) => (r.status === "fulfilled" ? r.value : ""))
+          .filter(Boolean)
+          .join("\n\n");
+      }
       if (paths.length > 0) {
         const results = await Promise.allSettled(
           paths.map((p) => AnalyzePath(p))
@@ -89,18 +100,18 @@ export function useConversation() {
         const contentResults = await Promise.allSettled(
           paths.map((p) => AnalyzePathContent(p))
         );
-        scans = results
+        scans = (results
           .map((r) => (r.status === "fulfilled" ? r.value : ""))
           .filter(Boolean)
-          .join("\n\n---\n\n");
+          .join("\n\n---\n\n"));
         const contents = contentResults
           .map((r) => (r.status === "fulfilled" ? r.value : ""))
           .filter(Boolean)
           .join("\n\n");
-        if (scans) {
+        if (scans || urlContent) {
           apiMessages.splice(-1, 0, {
             role: "system",
-            content: `Path context from user message:\n\n${scans}${contents ? "\n\nFile contents:\n\n" + contents : ""}`,
+            content: `Additional context from user message:\n\n${scans}${contents ? "\n\nFile contents:\n\n" + contents : ""}${urlContent ? "\n\nURL content:\n\n" + urlContent : ""}`,
           });
         }
       }
