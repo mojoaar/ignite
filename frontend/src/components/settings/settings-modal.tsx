@@ -104,16 +104,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   }, [selectedProvider, open]);
 
   useEffect(() => {
-    const models = providerModels[selectedProvider];
-    if (models && models.length > 0) {
-      const current = providerFields[selectedProvider]?.defaultModel;
-      if (!current || !models.find((m) => m.id === current)) {
-        setField(selectedProvider, "defaultModel", models[0].id);
-      }
-    }
-  }, [providerModels, selectedProvider]);
-
-  useEffect(() => {
     if (!open) return;
     GetSettings()
       .then((s) => {
