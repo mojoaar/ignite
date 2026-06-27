@@ -85,7 +85,8 @@ AGPL-3.0 — see [LICENSE](LICENSE)
 - `Role` type safety — `"user" | "assistant" | "system"` union type
 - Release deployed to GitHub with tagged binaries
 
-### v0.1.4
+<details>
+<summary>v0.1.4</summary>
 
 - System prompt injected into AI conversations (5-phase interview guide)
 - JSON project name parsing — AI auto-renames "Untitled" projects
@@ -108,6 +109,8 @@ AGPL-3.0 — see [LICENSE](LICENSE)
 - Preferences tab (renamed from Appearance) with folder picker
 - Providers docs page shows separate Go and Zen model lists
 - Deploy target in Makefile + local deploy script for Caddy
+
+</details>
 
 <details>
 <summary>v0.1.3</summary>
