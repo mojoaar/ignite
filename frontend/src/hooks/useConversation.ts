@@ -1,21 +1,27 @@
 import { useCallback } from "react";
 import { useChatStore } from "@/lib/store/chat";
-import { SendMessageStream, AddMessage, AnalyzePath, AnalyzePathContent, SetProjectMeta } from "@wails/go/main/App";
+import { SendMessage, SendMessageStream, AddMessage, AnalyzePath, AnalyzePathContent, SetProjectMeta } from "@wails/go/main/App";
 import { EventsOn, EventsOff } from "@wails/runtime";
 
 const PATH_PATTERN = /(~\/\S+|(?:\/Users\/|\/home\/|\/tmp\/)\S+)/g;
 
-const SYSTEM_PROMPT = `You are Ignite's provisioning assistant. Follow this 5-phase interview:
+const SYSTEM_PROMPT = `You are Ignite's provisioning assistant. Follow this 5-phase interview.
 
 Phase 1: Identity & Vision — project name, tagline, description, target audience.
   When confirmed, output: {"project":{"name":"...","tagline":"..."}}
 
 Phase 2: Tech Stack — frontend, backend, database, auth, hosting. Offer guidance.
-Phase 3: Features & Architecture — core features, API design, DB schema.
-Phase 4: Roadmap & Quality — phases 0-4, performance targets, risks.
-Phase 5: Generation — produce 4 files: project.md, agents.md, plan.md, README.md.
 
+Phase 3: Features & Architecture — core features, API design, DB schema.
+
+Phase 4: Roadmap & Quality — phases 0-4, performance targets, risks.
+
+Phase 5: Generation — output the full project spec ready for template rendering.
+
+Based on the conversation progress, determine the current phase and continue.
 Ask one question at a time. Be concise. Use the JSON format to report decisions.`;
+
+const PHASE_LABELS = ["identity", "tech-stack", "features", "roadmap", "generation"];
 
 const PROJ_JSON = /\{"project"\s*:\s*\{"name"\s*:\s*"([^"]+)"\s*,\s*"tagline"\s*:\s*"([^"]*)"\}\}/;
 
@@ -35,10 +41,12 @@ export function useConversation() {
 
   const sendMessage = useCallback(
     async (provider: string, model: string, content: string) => {
+      const phaseIdx = Math.min(Math.floor(messages.length / 2), 4);
+      const phase = PHASE_LABELS[phaseIdx] || "generation";
       const userMsg = {
         id: crypto.randomUUID(),
         project_id: activeProjectId ?? "",
-        phase: "",
+        phase,
         role: "user" as const,
         content,
         created_at: new Date().toISOString(),
@@ -115,7 +123,7 @@ export function useConversation() {
           const assistantMsg = {
             id: crypto.randomUUID(),
             project_id: activeProjectId,
-            phase: "",
+            phase,
             role: "assistant" as const,
             content: finalText,
             created_at: new Date().toISOString(),
@@ -124,6 +132,20 @@ export function useConversation() {
         }
       } catch (err) {
         useChatStore.setState({ isStreaming: false });
+        try {
+          const resp = await SendMessage(provider, model, apiMessages);
+          finishStreaming(resp.content || "[empty response]");
+          if (activeProjectId) {
+            AddMessage({
+              id: crypto.randomUUID(),
+              project_id: activeProjectId,
+              phase,
+              role: "assistant",
+              content: resp.content || "[empty response]",
+              created_at: new Date().toISOString(),
+            }).catch(() => {});
+          }
+        } catch {}
       }
     },
     [activeProjectId, messages, addMessage, startStreaming, finishStreaming, setProjectName]

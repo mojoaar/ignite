@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Plus, Flame, Trash2, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useChatStore } from "@/lib/store/chat";
+import { useChatStore, type Message } from "@/lib/store/chat";
 import { cn } from "@/lib/utils";
 import { ListProjects, CreateProject, GetProject, GetMessages, DeleteProject, UpdateProject } from "@wails/go/main/App";
 import { EventsOn, EventsOff } from "@wails/runtime";
@@ -82,7 +82,7 @@ export function Sidebar() {
     setActiveProject(id);
     try {
       const msgs = await GetMessages(id);
-      setMessages(msgs ?? []);
+      setMessages((msgs ?? []) as Message[]);
       const proj = await GetProject(id);
       if (proj) {
         setActiveProjectPath(proj.path || "");

@@ -6,6 +6,7 @@ import { Sidebar } from "@/components/sidebar/sidebar";
 import { ChatPanel } from "@/components/chat/chat-panel";
 import { StatusBar } from "@/components/status-bar/status-bar";
 import { SettingsModal } from "@/components/settings/settings-modal";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ExportChat, HasAPIKey, GetSettings, SelectDirectory, GetCachedModels, GenerateProjectFiles } from "@wails/go/main/App";
 import { EventsOn, EventsOff } from "@wails/runtime";
 
@@ -104,6 +105,7 @@ function App() {
   }, [handleExport]);
 
   return (
+    <ErrorBoundary>
     <div className="flex h-screen flex-col bg-background text-text-primary">
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
@@ -133,6 +135,7 @@ function App() {
         }}
       />
     </div>
+    </ErrorBoundary>
   );
 }
 export default App;
