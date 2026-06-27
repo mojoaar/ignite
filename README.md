@@ -73,7 +73,16 @@ AGPL-3.0 — see [LICENSE](LICENSE)
 
 ## Changelog
 
-### v0.1.5 (current — first tagged release)
+### v0.1.6 (current)
+
+- Phase badge in status bar showing interview progression (Phase 1-5/5)
+- Toast notifications replace browser `alert()` for file generation feedback
+- Phase progression slowed — counts user messages only, hides badge without explicit phase
+- Frontend component tests: 43 vitest tests across 8 components
+- Go tests: 32 tests across all packages (80% history, 76% providers, 74% settings, 81% scanner, 68% templates)
+- Cross-platform roadmap in plan.md (Windows/Linux planned for v0.3.0)
+
+### v0.1.5 (first tagged release)
 
 - Web fetch — paste URLs in chat, Ignite fetches and injects page content as context
 - Phase-aware generate icon (red → amber → green based on interview progress)
