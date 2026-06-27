@@ -165,18 +165,19 @@ func (p *OpenCodeProvider) listModelsFromAPI(ctx context.Context) ([]Model, erro
 
 func (p *OpenCodeProvider) defaultModels() []Model {
 	return []Model{
-		{ID: "gpt-4o", DisplayName: "GPT-4o"},
-		{ID: "gpt-4o-mini", DisplayName: "GPT-4o Mini"},
-		{ID: "gpt-4.1", DisplayName: "GPT-4.1"},
-		{ID: "gpt-4.1-nano", DisplayName: "GPT-4.1 Nano"},
-		{ID: "gpt-4.1-mini", DisplayName: "GPT-4.1 Mini"},
-		{ID: "claude-sonnet-4", DisplayName: "Claude Sonnet 4"},
-		{ID: "claude-opus-4", DisplayName: "Claude Opus 4"},
-		{ID: "claude-haiku-3.5", DisplayName: "Claude Haiku 3.5"},
-		{ID: "deepseek-v4-pro", DisplayName: "DeepSeek Pro"},
-		{ID: "deepseek-v4-flash", DisplayName: "DeepSeek Flash"},
-		{ID: "gemini-2.5-pro", DisplayName: "Gemini 2.5 Pro"},
-		{ID: "gemini-2.5-flash", DisplayName: "Gemini 2.5 Flash"},
+		{ID: "glm-5.2", DisplayName: "GLM-5.2"},
+		{ID: "glm-5.1", DisplayName: "GLM-5.1"},
+		{ID: "kimi-k2.7-code", DisplayName: "Kimi K2.7 Code"},
+		{ID: "kimi-k2.6", DisplayName: "Kimi K2.6"},
+		{ID: "mimo-v2.5", DisplayName: "MiMo-V2.5"},
+		{ID: "mimo-v2.5-pro", DisplayName: "MiMo-V2.5-Pro"},
+		{ID: "minimax-m3", DisplayName: "MiniMax M3"},
+		{ID: "minimax-m2.7", DisplayName: "MiniMax M2.7"},
+		{ID: "qwen3.7-max", DisplayName: "Qwen3.7 Max"},
+		{ID: "qwen3.7-plus", DisplayName: "Qwen3.7 Plus"},
+		{ID: "qwen3.6-plus", DisplayName: "Qwen3.6 Plus"},
+		{ID: "deepseek-v4-pro", DisplayName: "DeepSeek V4 Pro"},
+		{ID: "deepseek-v4-flash", DisplayName: "DeepSeek V4 Flash"},
 	}
 }
 
