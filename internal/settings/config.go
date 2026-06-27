@@ -36,8 +36,24 @@ func configPath() (string, error) {
 	return filepath.Join(dir, "config.json"), nil
 }
 
+var configDir string
+
+func SetConfigDir(dir string) {
+	configDir = dir
+}
+
+func configDirPath() (string, error) {
+	if configDir != "" {
+		if err := os.MkdirAll(configDir, 0700); err != nil {
+			return "", err
+		}
+		return filepath.Join(configDir, "config.json"), nil
+	}
+	return configPath()
+}
+
 func LoadConfig() (*Config, error) {
-	path, err := configPath()
+	path, err := configDirPath()
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +72,7 @@ func LoadConfig() (*Config, error) {
 }
 
 func SaveConfig(cfg *Config) error {
-	path, err := configPath()
+	path, err := configDirPath()
 	if err != nil {
 		return err
 	}

@@ -1,6 +1,7 @@
 package settings
 
 import (
+	"os"
 	"testing"
 )
 
@@ -66,5 +67,34 @@ func TestDefaultConfigAllFields(t *testing.T) {
 	}
 	if cfg.Providers == nil {
 		t.Error("expected non-nil Providers map")
+	}
+}
+
+func TestLoadConfigCorruptFile(t *testing.T) {
+	dir := t.TempDir()
+	SetConfigDir(dir)
+	defer func() { SetConfigDir("") }()
+	cfg := DefaultConfig()
+	SaveConfig(cfg)
+	if err := os.WriteFile(dir+"/config.json", []byte("this is not json"), 0600); err != nil {
+		t.Fatalf("write corrupt: %v", err)
+	}
+	_, err := LoadConfig()
+	if err == nil {
+		t.Error("expected error for corrupt config")
+	}
+}
+
+func TestLoadConfigMissingFile(t *testing.T) {
+	dir := t.TempDir()
+	os.RemoveAll(dir)
+	SetConfigDir(dir)
+	defer func() { SetConfigDir("") }()
+	cfg, err := LoadConfig()
+	if err != nil {
+		t.Fatalf("LoadConfig should return DefaultConfig when file missing: %v", err)
+	}
+	if cfg.Appearance != "dark" {
+		t.Error("expected dark appearance from DefaultConfig")
 	}
 }
