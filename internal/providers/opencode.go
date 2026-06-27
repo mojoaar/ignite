@@ -164,6 +164,13 @@ func (p *OpenCodeProvider) listModelsFromAPI(ctx context.Context) ([]Model, erro
 }
 
 func (p *OpenCodeProvider) defaultModels() []Model {
+	if strings.Contains(p.endpoint, "/go/") {
+		return p.defaultModelsGo()
+	}
+	return p.defaultModelsZen()
+}
+
+func (p *OpenCodeProvider) defaultModelsGo() []Model {
 	return []Model{
 		{ID: "glm-5.2", DisplayName: "GLM-5.2"},
 		{ID: "glm-5.1", DisplayName: "GLM-5.1"},
@@ -178,6 +185,40 @@ func (p *OpenCodeProvider) defaultModels() []Model {
 		{ID: "qwen3.6-plus", DisplayName: "Qwen3.6 Plus"},
 		{ID: "deepseek-v4-pro", DisplayName: "DeepSeek V4 Pro"},
 		{ID: "deepseek-v4-flash", DisplayName: "DeepSeek V4 Flash"},
+	}
+}
+
+func (p *OpenCodeProvider) defaultModelsZen() []Model {
+	return []Model{
+		{ID: "gpt-5.5", DisplayName: "GPT-5.5"},
+		{ID: "gpt-5.5-pro", DisplayName: "GPT-5.5 Pro"},
+		{ID: "gpt-5.4", DisplayName: "GPT-5.4"},
+		{ID: "gpt-5.4-pro", DisplayName: "GPT-5.4 Pro"},
+		{ID: "gpt-5.4-mini", DisplayName: "GPT-5.4 Mini"},
+		{ID: "gpt-5.4-nano", DisplayName: "GPT-5.4 Nano"},
+		{ID: "gpt-5.3-codex", DisplayName: "GPT-5.3 Codex"},
+		{ID: "gpt-5.3-codex-spark", DisplayName: "GPT-5.3 Codex Spark"},
+		{ID: "gpt-5.2", DisplayName: "GPT-5.2"},
+		{ID: "gpt-5.1", DisplayName: "GPT-5.1"},
+		{ID: "gpt-5.1-codex", DisplayName: "GPT-5.1 Codex"},
+		{ID: "gpt-5", DisplayName: "GPT-5"},
+		{ID: "gpt-5-codex", DisplayName: "GPT-5 Codex"},
+		{ID: "gpt-5-nano", DisplayName: "GPT-5 Nano"},
+		{ID: "claude-fable-5", DisplayName: "Claude Fable 5"},
+		{ID: "claude-opus-4-8", DisplayName: "Claude Opus 4.8"},
+		{ID: "claude-opus-4-5", DisplayName: "Claude Opus 4.5"},
+		{ID: "claude-sonnet-4-5", DisplayName: "Claude Sonnet 4.5"},
+		{ID: "claude-sonnet-4", DisplayName: "Claude Sonnet 4"},
+		{ID: "claude-haiku-4-5", DisplayName: "Claude Haiku 4.5"},
+		{ID: "gemini-3.5-flash", DisplayName: "Gemini 3.5 Flash"},
+		{ID: "gemini-3.1-pro", DisplayName: "Gemini 3.1 Pro"},
+		{ID: "gemini-3-flash", DisplayName: "Gemini 3 Flash"},
+		{ID: "grok-build-0.1", DisplayName: "Grok Build 0.1"},
+		{ID: "deepseek-v4-pro", DisplayName: "DeepSeek V4 Pro"},
+		{ID: "deepseek-v4-flash", DisplayName: "DeepSeek V4 Flash"},
+		{ID: "glm-5.2", DisplayName: "GLM-5.2"},
+		{ID: "glm-5.1", DisplayName: "GLM-5.1"},
+		{ID: "glm-5", DisplayName: "GLM-5"},
 	}
 }
 
