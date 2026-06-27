@@ -5,11 +5,16 @@ build:
 	bash scripts/seticon.sh
 
 publish: build
-	cd build/bin && hdiutil create -volname Ignite -srcfolder ignite.app -ov -format UDZO ../Ignite.dmg
-	cd build/bin && zip -r ../Ignite.zip ignite.app
+	cd build/bin && hdiutil create -volname Ignite -srcfolder Ignite.app -ov -format UDZO ../Ignite.dmg
+	cd build/bin && zip -r ../Ignite.zip Ignite.app
 	@echo ""
 	@echo "Published: build/Ignite.dmg  build/Ignite.zip"
 	@ls -lh build/Ignite.dmg build/Ignite.zip
+
+deploy:
+	cp build/Ignite.dmg site/assets/Ignite.dmg
+	cp build/Ignite.zip site/assets/Ignite.zip
+	@echo "Deployed binaries to site/assets/"
 
 dev:
 	wails dev

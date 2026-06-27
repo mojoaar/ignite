@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings — Ignite Docs</title>
+<meta name="description" content="Configure Ignite settings: API providers, appearance (dark/light mode), fonts, license defaults, and project directory.">
+<link rel="canonical" href="https://ignite.johansen.foo/docs/settings.html">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<nav>
+  <div class="inner">
+    <a href="/" class="logo" style="text-decoration:none;">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none"><rect width="24" height="24" rx="3" fill="#0c0c14"/><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" fill="#ffb450"/></svg>
+      Ignite
+    </a>
+    <div class="links"><a href="/">Home</a><a href="/docs/">Docs</a><a href="https://github.com/mojoaar/ignite" target="_blank" rel="noopener">GitHub</a></div>
+  </div>
+</nav>
+
+<section>
+  <div class="container">
+    <h2>Settings</h2>
+    <p>Configure providers, appearance, and project defaults.</p>
+    <div class="docs-layout">
+      <aside class="docs-sidebar">
+        <a href="/docs/">Overview</a>
+        <a href="/docs/getting-started.html">Getting Started</a>
+        <a href="/docs/providers.html">Providers</a>
+        <a href="/docs/provisioning.html">Provisioning</a>
+        <a href="/docs/settings.html" class="active">Settings</a>
+        <a href="/docs/faq.html">FAQ</a>
+      </aside>
+      <article class="docs-content">
+
+        <h2>Opening Settings</h2>
+        <p>Access Settings from the menu bar (<strong>File → Settings</strong>, shortcut <code>Cmd+,</code>) or click the gear icon in the status bar.</p>
+
+        <h2>Providers Tab</h2>
+
+        <h3>Selecting a Provider</h3>
+        <p>Choose your AI provider from the dropdown: OpenCode Go, OpenCode Zen, Claude, or DeepSeek. Each provider has its own endpoint, model list, and API key.</p>
+
+        <h3>Configuring an API Key</h3>
+        <ol>
+          <li>Get your API key from the provider's website</li>
+          <li>Paste it in the API Key field</li>
+          <li>Click the validate button (checkmark icon)</li>
+          <li>Green checkmark means the key is valid</li>
+          <li>Red X means the key is invalid or the endpoint is unreachable</li>
+        </ol>
+        <p>Keys are stored in your OS keychain (macOS Keychain), not in plaintext. The <code>~/.ignite/config.json</code> file stores only provider metadata.</p>
+
+        <h3>Model Selection</h3>
+        <p>Model lists are cached in a local SQLite database and refreshed every 15 minutes. You can browse models even without an API key configured — Ignite shows a default list. When you configure a key, live models replace the defaults on the next refresh cycle.</p>
+
+        <h2>Appearance Tab</h2>
+
+        <h3>Theme</h3>
+        <p>Switch between dark mode (default) and light mode. The change applies immediately — no restart needed. Your preference is saved to <code>~/.ignite/config.json</code>.</p>
+
+        <h3>Default License</h3>
+        <p>Choose from 9 common open-source licenses: MIT, Apache-2.0, GPL-3.0, AGPL-3.0, BSD-3-Clause, BSD-2-Clause, MPL-2.0, Unlicense, and Proprietary. This is used as the default when generating new projects.</p>
+
+        <h3>Default Project Directory</h3>
+        <p>Where Ignite writes output files. Defaults to <code>~/Development</code>. Change this to your preferred workspace location.</p>
+
+        <h3>Font</h3>
+        <p>Choose from 10 monospace fonts. JetBrains Mono, Fira Code, IBM Plex Mono, Source Code Pro, and Roboto Mono are bundled with the app for offline use. Other fonts require system installation or fall back to your system monospace.</p>
+
+        <h2>Configuration File</h2>
+        <p>All settings are persisted in <code>~/.ignite/config.json</code>. You can also edit this file directly if you prefer. The OS keychain stores API keys separately.</p>
+
+      </article>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p style="font-family:var(--font-mono);">Ignite &mdash; Provisioning with a heartbeat</p>
+    <p style="margin-top:8px;opacity:0.5;">&copy; 2026 Morten Johansen &middot; AGPL-3.0</p>
+  </div>
+</footer>
+</body>
+</html>
