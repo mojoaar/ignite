@@ -3,5 +3,6 @@ frontend/node_modules/
 frontend/wailsjs/
 frontend/package.json.md5
 Ignite
+scripts/local-deploy.sh
 .DS_Store
 *.log
