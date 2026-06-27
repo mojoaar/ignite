@@ -5,6 +5,7 @@
 @import "@fontsource-variable/fira-code";
 @import "@fontsource/ibm-plex-mono";
 @import "@fontsource-variable/source-code-pro";
+@import "@fontsource-variable/roboto-mono";
 
 @custom-variant dark (&:is(.dark *));
 

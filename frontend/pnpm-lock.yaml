@@ -20,6 +20,9 @@ importers:
       '@fontsource-variable/jetbrains-mono':
         specifier: ^5.2.8
         version: 5.2.8
+      '@fontsource-variable/roboto-mono':
+        specifier: ^5.2.9
+        version: 5.2.9
       '@fontsource-variable/source-code-pro':
         specifier: ^5.2.7
         version: 5.2.7
@@ -524,6 +527,9 @@ packages:
 
   '@fontsource-variable/jetbrains-mono@5.2.8':
     resolution: {integrity: sha512-WBA9elru6Jdp5df2mES55wuOO0WIrn3kpXnI4+W2ek5u3ZgLS9XS4gmIlcQhiZOWEKl95meYdvK7xI+ETLCq/Q==}
+
+  '@fontsource-variable/roboto-mono@5.2.9':
+    resolution: {integrity: sha512-OzFO2AXlSGcXl/NcXS3CGjImb6rczCByPJ1C+Dzp9kkYOrUPyrGTuAtqPcmA/d+nZGX5oyOWKXLk5BrwVLYqkw==}
 
   '@fontsource-variable/source-code-pro@5.2.7':
     resolution: {integrity: sha512-kZ0VNwnhvSA7vu5MaiO52eicQ4zC+k+8HBLZb+1js0MK/RngLy25NEUFB1y/AKd0ZMwru88T433QBcFf9m/huw==}
@@ -3110,6 +3116,8 @@ snapshots:
   '@fontsource-variable/geist@5.2.9': {}
 
   '@fontsource-variable/jetbrains-mono@5.2.8': {}
+
+  '@fontsource-variable/roboto-mono@5.2.9': {}
 
   '@fontsource-variable/source-code-pro@5.2.7': {}
 

@@ -16,6 +16,7 @@
     "@fontsource-variable/fira-code": "^5.2.7",
     "@fontsource-variable/geist": "^5.2.9",
     "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "@fontsource-variable/roboto-mono": "^5.2.9",
     "@fontsource-variable/source-code-pro": "^5.2.7",
     "@fontsource/ibm-plex-mono": "^5.2.7",
     "class-variance-authority": "^0.7.1",
