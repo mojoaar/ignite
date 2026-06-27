@@ -17,9 +17,9 @@ type OpenCodeProvider struct {
 	endpoint string
 }
 
-func NewOpenCodeProvider(apiKey string) *OpenCodeProvider {
+func NewOpenCodeProvider(apiKey, endpoint string) *OpenCodeProvider {
 	return &OpenCodeProvider{
-		apiKey: apiKey, endpoint: "https://api.opencode.ai/v1", client: &http.Client{},
+		apiKey: apiKey, endpoint: endpoint, client: &http.Client{},
 	}
 }
 

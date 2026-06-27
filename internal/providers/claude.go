@@ -136,12 +136,41 @@ func (p *ClaudeProvider) ChatStream(ctx context.Context, model string, messages 
 	return scanner.Err()
 }
 
+type claudeModelsResponse struct {
+	Data []struct {
+		ID          string `json:"id"`
+		DisplayName string `json:"display_name"`
+	} `json:"data"`
+}
+
 func (p *ClaudeProvider) ListModels(ctx context.Context) ([]Model, error) {
-	return []Model{
-		{ID: "claude-sonnet-4-20250514", DisplayName: "Claude Sonnet 4"},
-		{ID: "claude-opus-4-20250514", DisplayName: "Claude Opus 4"},
-		{ID: "claude-haiku-3.5", DisplayName: "Claude Haiku 3.5"},
-	}, nil
+	req, err := http.NewRequestWithContext(ctx, "GET", p.endpoint+"/models?limit=100", nil)
+	if err != nil {
+		return nil, fmt.Errorf("claude: create request: %w", err)
+	}
+	req.Header.Set("x-api-key", p.apiKey)
+	req.Header.Set("anthropic-version", "2023-06-01")
+
+	resp, err := p.client.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("claude: request: %w", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		bodyBytes, _ := io.ReadAll(resp.Body)
+		return nil, fmt.Errorf("claude: status %d: %s", resp.StatusCode, string(bodyBytes))
+	}
+
+	var result claudeModelsResponse
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return nil, fmt.Errorf("claude: decode: %w", err)
+	}
+	models := make([]Model, len(result.Data))
+	for i, m := range result.Data {
+		models[i] = Model{ID: m.ID, DisplayName: m.DisplayName}
+	}
+	return models, nil
 }
 
 func (p *ClaudeProvider) ValidateKey(ctx context.Context) error {

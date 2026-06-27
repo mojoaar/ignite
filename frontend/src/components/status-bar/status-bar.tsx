@@ -7,15 +7,13 @@ const PROVIDERS = [
   { id: "opencode-zen", label: "OpenCode Zen" },
   { id: "claude", label: "Claude" },
   { id: "deepseek", label: "DeepSeek" },
-  { id: "github-copilot", label: "GitHub Copilot" },
 ];
 
 const DEFAULT_MODELS: Record<string, string[]> = {
-  "opencode-go": ["gpt-4o", "gpt-4o-mini"],
-  "opencode-zen": ["gpt-4o", "gpt-4o-mini"],
-  claude: ["claude-sonnet-4-20250514", "claude-opus-4-20250514", "claude-haiku-3.5"],
-  deepseek: ["deepseek-chat", "deepseek-reasoner"],
-  "github-copilot": ["github-copilot"],
+  "opencode-go": [],
+  "opencode-zen": [],
+  claude: [],
+  deepseek: [],
 };
 
 interface StatusBarProps {

@@ -48,30 +48,27 @@ interface SettingsData {
   font: string;
 }
 
-const PROVIDER_IDS = ["opencode-go", "opencode-zen", "claude", "deepseek", "github-copilot"];
+const PROVIDER_IDS = ["opencode-go", "opencode-zen", "claude", "deepseek"];
 
 const PROVIDER_LABELS: Record<string, string> = {
   "opencode-go": "OpenCode Go",
   "opencode-zen": "OpenCode Zen",
   claude: "Claude",
   deepseek: "DeepSeek",
-  "github-copilot": "GitHub Copilot",
 };
 
 const PROVIDER_ENDPOINTS: Record<string, string> = {
-  "opencode-go": "https://api.opencode.ai/v1",
-  "opencode-zen": "https://api.opencode.ai/v1",
+  "opencode-go": "https://opencode.ai/zen/go/v1",
+  "opencode-zen": "https://opencode.ai/zen/v1",
   claude: "https://api.anthropic.com/v1/messages",
   deepseek: "https://api.deepseek.com/v1",
-  "github-copilot": "https://api.github.com/copilot",
 };
 
 const PROVIDER_DEFAULT_MODELS: Record<string, string> = {
-  "opencode-go": "gpt-4o",
-  "opencode-zen": "gpt-4o",
-  claude: "claude-sonnet-4-20250514",
-  deepseek: "deepseek-chat",
-  "github-copilot": "github-copilot",
+  "opencode-go": "",
+  "opencode-zen": "",
+  claude: "",
+  deepseek: "",
 };
 
 interface SettingsModalProps {

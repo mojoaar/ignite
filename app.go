@@ -84,14 +84,14 @@ func (a *App) GetProvider(name string) (providers.LLMProvider, error) {
 	}
 
 	switch name {
-	case "opencode-go", "opencode-zen":
-		return providers.NewOpenCodeProvider(key), nil
+	case "opencode-go":
+		return providers.NewOpenCodeProvider(key, "https://opencode.ai/zen/go/v1"), nil
+	case "opencode-zen":
+		return providers.NewOpenCodeProvider(key, "https://opencode.ai/zen/v1"), nil
 	case "claude":
 		return providers.NewClaudeProvider(key), nil
 	case "deepseek":
 		return providers.NewDeepSeekProvider(key), nil
-	case "github-copilot":
-		return providers.NewGitHubCopilotProvider(key), nil
 	default:
 		return nil, fmt.Errorf("unknown provider: %s", name)
 	}
@@ -120,14 +120,14 @@ func (a *App) SendMessageStream(providerName, model string, messages []providers
 func (a *App) ValidateProviderKey(providerName, key string) error {
 	var p providers.LLMProvider
 	switch providerName {
-	case "opencode-go", "opencode-zen":
-		p = providers.NewOpenCodeProvider(key)
+	case "opencode-go":
+		p = providers.NewOpenCodeProvider(key, "https://opencode.ai/zen/go/v1")
+	case "opencode-zen":
+		p = providers.NewOpenCodeProvider(key, "https://opencode.ai/zen/v1")
 	case "claude":
 		p = providers.NewClaudeProvider(key)
 	case "deepseek":
 		p = providers.NewDeepSeekProvider(key)
-	case "github-copilot":
-		p = providers.NewGitHubCopilotProvider(key)
 	default:
 		return fmt.Errorf("unknown provider: %s", providerName)
 	}
@@ -168,15 +168,15 @@ func (a *App) ListProviderModels(providerName string) ([]providers.Model, error)
 		p = providers.NewClaudeProvider(key)
 	case "deepseek":
 		p = providers.NewDeepSeekProvider(key)
-	case "github-copilot":
-		p = providers.NewGitHubCopilotProvider(key)
 	default:
 		if err != nil {
 			return nil, fmt.Errorf("no API key for %s", providerName)
 		}
 		switch providerName {
-		case "opencode-go", "opencode-zen":
-			p = providers.NewOpenCodeProvider(key)
+		case "opencode-go":
+			p = providers.NewOpenCodeProvider(key, "https://opencode.ai/zen/go/v1")
+		case "opencode-zen":
+			p = providers.NewOpenCodeProvider(key, "https://opencode.ai/zen/v1")
 		default:
 			return nil, fmt.Errorf("unknown provider: %s", providerName)
 		}

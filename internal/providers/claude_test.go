@@ -26,13 +26,20 @@ func TestClaude_Chat(t *testing.T) {
 }
 
 func TestClaude_ListModels(t *testing.T) {
-	p := NewClaudeProvider("test")
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		json.NewEncoder(w).Encode(claudeModelsResponse{Data: []struct {
+			ID          string `json:"id"`
+			DisplayName string `json:"display_name"`
+		}{{ID: "claude-sonnet-4", DisplayName: "Claude Sonnet 4"}}})
+	}))
+	defer server.Close()
+	p := &ClaudeProvider{apiKey: "test", endpoint: server.URL, client: server.Client()}
 	models, err := p.ListModels(context.Background())
 	if err != nil {
 		t.Fatalf("ListModels: %v", err)
 	}
-	if len(models) != 3 {
-		t.Errorf("expected 3, got %d", len(models))
+	if len(models) != 1 {
+		t.Errorf("expected 1, got %d", len(models))
 	}
 }
 
