@@ -68,7 +68,38 @@ AGPL-3.0 — see [LICENSE](LICENSE)
 
 ## Changelog
 
-### v0.1.2 (current)
+### v0.1.4 (current)
+
+- System prompt injected into AI conversations (5-phase interview guide)
+- JSON project name parsing — AI auto-renames "Untitled" projects
+- Inline project rename via pencil icon on hover (sidebar)
+- Editable API key field + error feedback on settings save
+- Connection indicator refreshes immediately after saving API key
+- Open Folder (Cmd+O) with native dialog + tilde expansion fix
+- Current project directory displayed in status bar
+- Share API key between OpenCode Go and Zen automatically
+- Delete project from sidebar (Trash2 icon on hover)
+- Window size presets: Small, Medium, Large, 4K, Full Screen
+- User profile: display name + avatar upload in Preferences
+- Bot lucide icon for AI in chat, user avatar for your messages
+- Removed extra fonts (JetBrains Mono only), DMG: 7.2M → 6.8M
+- Path scanner reads file contents for referenced projects
+- Corrected OpenCode Go/Zen model lists from their actual APIs
+- Removed Claude as standalone provider
+- Preferences tab (renamed from Appearance) with folder picker
+- Providers docs page shows separate Go and Zen model lists
+- Deploy target in Makefile + local deploy script for Caddy
+
+### v0.1.3
+
+- Removed Claude provider (3 providers: OpenCode Go, OpenCode Zen, DeepSeek)
+- Open Folder (Cmd+O) with native macOS dialog
+- Current project directory displayed in status bar
+- Delete project from sidebar (Trash2 icon on hover)
+- About modal centering fixes
+
+<details>
+<summary>v0.1.2</summary>
 
 - Landing site at ignite.johansen.foo with terminal mockup hero + light/dark mode
 - 7 documentation pages (Overview, Getting Started, Providers, Provisioning, Settings, FAQ, Developer Setup)
