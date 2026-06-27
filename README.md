@@ -85,7 +85,8 @@ AGPL-3.0 — see [LICENSE](LICENSE)
 - Settings UX: dropdown selectors for model, license, font
 - Universal project path scanner for conversation context
 
-### v0.1.0
+<details>
+<summary>v0.1.0</summary>
 
 - Initial release
 - Wails v2 desktop shell + React 19 frontend
@@ -102,3 +103,5 @@ AGPL-3.0 — see [LICENSE](LICENSE)
 - Chat export as markdown
 - Keyboard shortcuts (Enter/Shift+Enter to send)
 - Scroll-to-bottom button, slide-up animations, blinking cursor
+
+</details>
