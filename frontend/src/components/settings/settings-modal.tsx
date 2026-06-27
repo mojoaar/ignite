@@ -75,6 +75,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const [settings, setSettings] = useState<SettingsData | null>(null);
   const [providerFields, setProviderFields] = useState<Record<string, ProviderFields>>({});
   const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState("");
   const [selectedProvider, setSelectedProvider] = useState("opencode-go");
   const [providerModels, setProviderModels] = useState<Record<string, { id: string; name: string }[]>>({});
 
@@ -147,6 +148,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   const handleSave = async () => {
     if (!settings) return;
     setSaving(true);
+    setSaveError("");
     try {
       const newProviders: Record<string, { endpoint: string; default_model: string }> = {};
       for (const pid of PROVIDER_IDS) {
@@ -162,7 +164,9 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         providers: newProviders,
       } as Parameters<typeof SaveSettings>[0]);
       onClose();
-    } catch {}
+    } catch (e) {
+      setSaveError(e instanceof Error ? e.message : "Failed to save settings");
+    }
     setSaving(false);
   };
 
@@ -472,6 +476,9 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             {saving ? "Saving..." : "Save"}
           </Button>
         </div>
+        {saveError && (
+          <p className="text-xs text-error mt-2 text-right">{saveError}</p>
+        )}
       </DialogContent>
     </Dialog>
   );
