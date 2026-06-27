@@ -33,6 +33,12 @@ func (a *App) startup(ctx context.Context) {
 	}
 	a.cfg = cfg
 
+	if cfg.WindowWidth == 0 {
+		cfg.WindowWidth = 1024
+	}
+	if cfg.WindowHeight == 0 {
+		cfg.WindowHeight = 768
+	}
 	runtime.WindowSetSize(ctx, cfg.WindowWidth, cfg.WindowHeight)
 
 	home, _ := os.UserHomeDir()
