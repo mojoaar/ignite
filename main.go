@@ -32,6 +32,12 @@ func main() {
 			runtime.EventsEmit(menuApp.ctx, "menu-new-project")
 		}
 	})
+	fileMenu.AddText("Open Folder...", keys.CmdOrCtrl("o"), func(_ *menu.CallbackData) {
+		if menuApp != nil {
+			runtime.EventsEmit(menuApp.ctx, "menu-open-folder")
+		}
+	})
+	fileMenu.AddSeparator()
 	fileMenu.AddText("Export Chat", keys.CmdOrCtrl("e"), func(_ *menu.CallbackData) {
 		if menuApp != nil {
 			runtime.EventsEmit(menuApp.ctx, "menu-export")

@@ -263,3 +263,16 @@ func (a *App) ExportChat(messages []history.Message) string {
 func (a *App) AnalyzePath(path string) string {
 	return scanner.AnalyzePath(path)
 }
+
+func (a *App) SelectDirectory() string {
+	dir, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
+		Title:       "Select project folder",
+		DefaultDirectory: a.cfg.DefaultProjectDir,
+	})
+	if err != nil || dir == "" {
+		return a.cfg.DefaultProjectDir
+	}
+	a.cfg.DefaultProjectDir = dir
+	settings.SaveConfig(a.cfg)
+	return dir
+}

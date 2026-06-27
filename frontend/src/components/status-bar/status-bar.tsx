@@ -12,6 +12,7 @@ const PROVIDERS = [
 interface StatusBarProps {
   provider: string;
   model: string;
+  projectDir?: string;
   onProviderChange: (provider: string) => void;
   onModelChange: (model: string) => void;
   onOpenSettings: () => void;
@@ -21,6 +22,7 @@ interface StatusBarProps {
 export function StatusBar({
   provider,
   model,
+  projectDir,
   onProviderChange,
   onModelChange,
   onOpenSettings,
@@ -57,6 +59,11 @@ export function StatusBar({
 
   return (
     <div className="flex h-10 shrink-0 items-center gap-3 border-t border-border bg-surface px-4">
+      {projectDir && (
+        <span className="font-mono text-[11px] text-text-secondary truncate max-w-[200px]" title={projectDir}>
+          {projectDir.replace(/^\/Users\/[^/]+\//, "~/")}
+        </span>
+      )}
       <select
         value={provider}
         onChange={(e) => onProviderChange(e.target.value)}

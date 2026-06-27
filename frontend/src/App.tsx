@@ -6,7 +6,7 @@ import { Sidebar } from "@/components/sidebar/sidebar";
 import { ChatPanel } from "@/components/chat/chat-panel";
 import { StatusBar } from "@/components/status-bar/status-bar";
 import { SettingsModal } from "@/components/settings/settings-modal";
-import { ExportChat, HasAPIKey, GetSettings } from "@wails/go/main/App";
+import { ExportChat, HasAPIKey, GetSettings, SelectDirectory } from "@wails/go/main/App";
 import { EventsOn } from "@wails/runtime";
 
 function App() {
@@ -19,6 +19,11 @@ function App() {
   const [model, setModel] = useState("");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [providerReady, setProviderReady] = useState(false);
+  const [projectDir, setProjectDir] = useState("");
+
+  useEffect(() => {
+    GetSettings().then((s) => setProjectDir(s.default_project_dir)).catch(() => {});
+  }, []);
 
   useEffect(() => {
     setProviderReady(false);
@@ -36,10 +41,14 @@ function App() {
     const unsubNew = EventsOn("menu-new-project", () => {});
     const unsubExport = EventsOn("menu-export", () => { handleExport(); });
     const unsubSettings = EventsOn("menu-settings", () => { setSettingsOpen(true); });
+    const unsubFolder = EventsOn("menu-open-folder", () => {
+      SelectDirectory().then((dir: string) => setProjectDir(dir)).catch(() => {});
+    });
     return () => {
       typeof unsubNew === "function" && unsubNew();
       typeof unsubExport === "function" && unsubExport();
       typeof unsubSettings === "function" && unsubSettings();
+      typeof unsubFolder === "function" && unsubFolder();
     };
   }, [messages]);
 
@@ -79,6 +88,7 @@ function App() {
       <StatusBar
         provider={provider}
         model={model}
+        projectDir={projectDir}
         onProviderChange={setProvider}
         onModelChange={setModel}
         onOpenSettings={() => setSettingsOpen(true)}

@@ -37,6 +37,8 @@ export function SaveProjectFiles(arg1:string,arg2:templates.ProjectFiles):Promis
 
 export function SaveSettings(arg1:settings.Config):Promise<void>;
 
+export function SelectDirectory():Promise<string>;
+
 export function SendMessage(arg1:string,arg2:string,arg3:Array<providers.Message>):Promise<providers.ChatResponse>;
 
 export function SendMessageStream(arg1:string,arg2:string,arg3:Array<providers.Message>):Promise<void>;
