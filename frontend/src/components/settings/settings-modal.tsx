@@ -158,20 +158,19 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
     if (!settings) return;
     setSaving(true);
     try {
+      const newProviders: Record<string, { endpoint: string; default_model: string }> = {};
       for (const pid of PROVIDER_IDS) {
         const f = providerFields[pid];
         if (f?.apiKey) {
           await SetAPIKey(pid, f.apiKey);
         }
-        await SaveSettings({
-          ...settings,
-          default_provider: selectedProvider,
-          providers: {
-            ...settings.providers,
-            [pid]: { endpoint: f.endpoint, default_model: f.defaultModel },
-          },
-        } as Parameters<typeof SaveSettings>[0]);
+        newProviders[pid] = { endpoint: f.endpoint, default_model: f.defaultModel };
       }
+      await SaveSettings({
+        ...settings,
+        default_provider: selectedProvider,
+        providers: newProviders,
+      } as Parameters<typeof SaveSettings>[0]);
       onClose();
     } catch {}
     setSaving(false);
@@ -281,13 +280,15 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                 <div className="relative">
                   <Input
                     id="key"
-                    type={providerFields[selectedProvider]?.showKey ? "text" : "password"}
+                    type={(providerFields[selectedProvider]?.hasKey && !providerFields[selectedProvider]?.apiKey) ? "password" : providerFields[selectedProvider]?.showKey ? "text" : "password"}
                     placeholder={providerFields[selectedProvider]?.hasKey ? "••••••••" : "Enter API key"}
                     value={providerFields[selectedProvider]?.apiKey ?? ""}
                     onChange={(e) => setField(selectedProvider, "apiKey", e.target.value)}
-                    className="bg-surface font-mono text-sm pr-16"
+                    disabled={providerFields[selectedProvider]?.hasKey && !providerFields[selectedProvider]?.apiKey}
+                    className="bg-surface font-mono text-sm pr-16 disabled:opacity-70"
                   />
                   <div className="absolute right-1 top-1/2 -translate-y-1/2 flex gap-0.5">
+                    {(!providerFields[selectedProvider]?.hasKey || providerFields[selectedProvider]?.apiKey) && (
                     <button
                       type="button"
                       onClick={() =>
@@ -301,6 +302,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                         <Eye className="h-4 w-4" />
                       )}
                     </button>
+                    )}
                     <button
                       type="button"
                       onClick={() => handleValidate(selectedProvider)}
