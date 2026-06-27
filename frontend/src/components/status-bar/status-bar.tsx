@@ -39,10 +39,15 @@ export function StatusBar({
     GetCachedModels(provider)
       .then((m) => {
         if (m && m.length > 0) {
-          setModels((m as { model_id: string; display_name: string }[]).map((x) => ({
+          const list = (m as { model_id: string; display_name: string }[]).map((x) => ({
             id: x.model_id,
             label: x.display_name || x.model_id,
-          })));
+          }));
+          setModels(list);
+          const found = list.find((x) => x.id === model);
+          if (!found && list.length > 0) {
+            onModelChange(list[0].id);
+          }
         } else {
           setModels([]);
         }

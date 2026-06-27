@@ -6,7 +6,7 @@ import { Sidebar } from "@/components/sidebar/sidebar";
 import { ChatPanel } from "@/components/chat/chat-panel";
 import { StatusBar } from "@/components/status-bar/status-bar";
 import { SettingsModal } from "@/components/settings/settings-modal";
-import { ExportChat, HasAPIKey } from "@wails/go/main/App";
+import { ExportChat, HasAPIKey, GetSettings } from "@wails/go/main/App";
 import { EventsOn } from "@wails/runtime";
 
 function App() {
@@ -16,13 +16,20 @@ function App() {
   const messages = useChatStore((s) => s.messages);
 
   const [provider, setProvider] = useState("opencode-go");
-  const [model, setModel] = useState("gpt-4o");
+  const [model, setModel] = useState("");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [providerReady, setProviderReady] = useState(false);
 
   useEffect(() => {
     setProviderReady(false);
     HasAPIKey(provider).then(setProviderReady).catch(() => setProviderReady(false));
+  }, [provider]);
+
+  useEffect(() => {
+    GetSettings().then((s) => {
+      const saved = s.providers?.[provider]?.default_model;
+      if (saved) setModel(saved);
+    }).catch(() => {});
   }, [provider]);
 
   useEffect(() => {

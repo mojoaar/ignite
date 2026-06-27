@@ -68,7 +68,25 @@ AGPL-3.0 — see [LICENSE](LICENSE)
 
 ## Changelog
 
-### v0.1.1 (current)
+### v0.1.2 (current)
+
+- Landing site at ignite.johansen.foo with terminal mockup hero + light/dark mode
+- 7 documentation pages (Overview, Getting Started, Providers, Provisioning, Settings, FAQ, Developer Setup)
+- Developer setup guide with 67 skill links and resource references
+- SEO optimization (Open Graph, JSON-LD, sitemap, robots.txt, canonical URLs)
+- Favicon ecosystem (ICO, SVG, PNG, Apple Touch Icon, Android Chrome icons)
+- Saved default model now auto-selects on provider switch (fixes all providers)
+- Settings: save overwrite bug fixed, locked API key field when key is in keychain
+- Settings: model dropdown shows display names, auto-selects first model
+- Settings: theme labels "Dark"/"Light" (capitalized)
+- About modal: centered tagline and version, removed Kvasir reference
+- Consistent docs sidebar with all 7 links on every page
+- App name casing: Ignite (capital I) throughout .app bundle, binary, DMG
+- FUNDING.yml with Buy Me a Coffee support
+- AGPL-3.0 LICENSE file
+
+<details>
+<summary>v0.1.1</summary>
 
 - Model cache with 15-minute background sync
 - Display names in model dropdowns (e.g. "Claude Sonnet 4" not "claude-sonnet-4")
