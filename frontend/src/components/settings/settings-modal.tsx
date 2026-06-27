@@ -64,12 +64,6 @@ const PROVIDER_ENDPOINTS: Record<string, string> = {
   deepseek: "https://api.deepseek.com/v1",
 };
 
-const PROVIDER_DEFAULT_MODELS: Record<string, string> = {
-  "opencode-go": "",
-  "opencode-zen": "",
-  claude: "",
-  deepseek: "",
-};
 
 interface SettingsModalProps {
   open: boolean;
@@ -120,7 +114,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         for (const pid of PROVIDER_IDS) {
           fields[pid] = {
             endpoint: s.providers?.[pid]?.endpoint ?? PROVIDER_ENDPOINTS[pid] ?? "",
-            defaultModel: s.providers?.[pid]?.default_model ?? PROVIDER_DEFAULT_MODELS[pid] ?? "",
+            defaultModel: s.providers?.[pid]?.default_model ?? "",
             apiKey: "",
             showKey: false,
             hasKey: false,
@@ -253,22 +247,25 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                   }}
                 >
                   <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Select a model">
-                    {providerFields[selectedProvider]?.defaultModel || ""}
+                  <SelectValue placeholder="Set API key to fetch models">
+                    {(() => {
+                      const mid = providerFields[selectedProvider]?.defaultModel;
+                      if (!mid) return "";
+                      const found = (providerModels[selectedProvider] ?? []).find((m) => m.id === mid);
+                      return found ? found.name : mid;
+                    })()}
                   </SelectValue>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {(providerModels[selectedProvider] ?? []).map((m) => (
-                      <SelectItem key={m.id} value={m.id}>
-                        {m.name}
-                      </SelectItem>
-                    ))}
-                    {(!providerModels[selectedProvider] || providerModels[selectedProvider].length === 0) && (
-                      <SelectItem value={providerFields[selectedProvider]?.defaultModel ?? ""}>
-                        {providerFields[selectedProvider]?.defaultModel ?? "No models"}
-                      </SelectItem>
-                    )}
-                  </SelectContent>
+                </SelectTrigger>
+                <SelectContent>
+                  {(providerModels[selectedProvider] ?? []).map((m) => (
+                    <SelectItem key={m.id} value={m.id}>
+                      {m.name}
+                    </SelectItem>
+                  ))}
+                  {(!providerModels[selectedProvider] || providerModels[selectedProvider].length === 0) && (
+                    <SelectItem value="">Set API key to fetch models</SelectItem>
+                  )}
+                </SelectContent>
                 </Select>
               </div>
 
@@ -334,11 +331,11 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                 }}
               >
                 <SelectTrigger className="bg-background">
-                  <SelectValue />
+                  <SelectValue>{settings.appearance === "dark" ? "Dark" : settings.appearance === "light" ? "Light" : settings.appearance}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="dark">dark</SelectItem>
-                  <SelectItem value="light">light</SelectItem>
+                  <SelectItem value="dark">Dark</SelectItem>
+                  <SelectItem value="light">Light</SelectItem>
                 </SelectContent>
               </Select>
             </div>
