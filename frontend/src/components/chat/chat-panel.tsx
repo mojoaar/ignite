@@ -7,9 +7,11 @@ import { ChatInput } from "./chat-input";
 interface ChatPanelProps {
   onSend: (content: string) => void;
   providerReady?: boolean;
+  avatar?: string;
+  userName?: string;
 }
 
-export function ChatPanel({ onSend, providerReady = false }: ChatPanelProps) {
+export function ChatPanel({ onSend, providerReady = false, avatar, userName }: ChatPanelProps) {
   const messages = useChatStore((s) => s.messages);
   const isStreaming = useChatStore((s) => s.isStreaming);
   const streamingContent = useChatStore((s) => s.streamingContent);
@@ -67,7 +69,7 @@ export function ChatPanel({ onSend, providerReady = false }: ChatPanelProps) {
           </div>
         )}
         {messages.map((msg) => (
-          <ChatBubble key={msg.id} message={msg} />
+          <ChatBubble key={msg.id} message={msg} avatar={avatar} userName={userName} />
         ))}
         {isStreaming && streamingContent && (
           <ChatBubble
@@ -80,6 +82,8 @@ export function ChatPanel({ onSend, providerReady = false }: ChatPanelProps) {
               created_at: new Date().toISOString(),
             }}
             isStreaming
+            avatar={avatar}
+            userName={userName}
           />
         )}
       </div>

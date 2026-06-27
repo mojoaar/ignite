@@ -46,6 +46,8 @@ interface SettingsData {
   default_license: string;
   default_project_dir: string;
   font: string;
+  name?: string;
+  avatar?: string;
 }
 
 const PROVIDER_IDS = ["opencode-go", "opencode-zen", "deepseek"];
@@ -401,68 +403,79 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
             </div>
 
             <div className="space-y-2">
-              <Label className="text-text-secondary">Font</Label>
-              <Select
-                value={settings.font}
-                  onValueChange={(v) => {
-                    if (!v) return;
-                    setSettings((s) => s && { ...s, font: v });
-                    const families: Record<string, string> = {
-                      "JetBrains Mono": "\"JetBrains Mono\", monospace",
-                      "Fira Code": "\"Fira Code\", monospace",
-                      "Cascadia Code": "\"Cascadia Code\", monospace",
-                      "IBM Plex Mono": "\"IBM Plex Mono\", monospace",
-                      "Source Code Pro": "\"Source Code Pro\", monospace",
-                      "Inconsolata": "\"Inconsolata\", monospace",
-                      "Ubuntu Mono": "\"Ubuntu Mono\", monospace",
-                      "DejaVu Sans Mono": "\"DejaVu Sans Mono\", monospace",
-                      "Roboto Mono": "\"Roboto Mono\", monospace",
-                      "Monoid": "Monoid, monospace",
-                    };
-                    document.documentElement.style.setProperty(
-                      "--font-mono",
-                      families[v] || `\"${v}\", monospace`
-                    );
-                  }}
-              >
-                <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Select a font" />
-                </SelectTrigger>
-                <SelectContent>
-                  {[
-                    "JetBrains Mono",
-                    "Fira Code",
-                    "Cascadia Code",
-                    "IBM Plex Mono",
-                    "Source Code Pro",
-                    "Inconsolata",
-                    "Ubuntu Mono",
-                    "DejaVu Sans Mono",
-                    "Roboto Mono",
-                    "Monoid",
-                  ].map((f) => (
-                    <SelectItem key={f} value={f}>
-                      {f}
-                    </SelectItem>
-                  ))}
-                  {![
-                    "JetBrains Mono",
-                    "Fira Code",
-                    "Cascadia Code",
-                    "IBM Plex Mono",
-                    "Source Code Pro",
-                    "Inconsolata",
-                    "Ubuntu Mono",
-                    "DejaVu Sans Mono",
-                    "Roboto Mono",
-                    "Monoid",
-                  ].includes(settings.font) && (
-                    <SelectItem value={settings.font}>
-                      {settings.font}
-                    </SelectItem>
+              <Label className="text-text-secondary">Display Name</Label>
+              <Input
+                value={settings.name ?? ""}
+                onChange={(e) =>
+                  setSettings((s) => s && { ...s, name: e.target.value })
+                }
+                className="bg-surface font-mono text-sm"
+                placeholder="Your name"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-text-secondary">Avatar</Label>
+              <div className="flex items-center gap-3">
+                {settings.avatar ? (
+                  <img src={settings.avatar} className="h-10 w-10 rounded-full object-cover border border-border" />
+                ) : (
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent font-mono text-sm text-white">
+                    {(settings.name?.[0] || "U").toUpperCase()}
+                  </div>
+                )}
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => {
+                      const input = document.createElement("input");
+                      input.type = "file";
+                      input.accept = "image/*";
+                      input.onchange = () => {
+                        const file = input.files?.[0];
+                        if (!file) return;
+                        const reader = new FileReader();
+                        reader.onload = () => {
+                          const img = new Image();
+                          img.onload = () => {
+                            const size = 128;
+                            const c = Math.min(img.width, img.height);
+                            const canvas = document.createElement("canvas");
+                            canvas.width = canvas.height = size;
+                            const ctx = canvas.getContext("2d");
+                            if (ctx) {
+                              ctx.drawImage(img, (img.width - c) / 2, (img.height - c) / 2, c, c, 0, 0, size, size);
+                            }
+                            setSettings((s) => s && { ...s, avatar: canvas.toDataURL("image/png") });
+                          };
+                          img.src = reader.result as string;
+                        };
+                        reader.readAsDataURL(file);
+                      };
+                      input.click();
+                    }}
+                  >
+                    Choose
+                  </Button>
+                  {settings.avatar && (
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setSettings((s) => s && { ...s, avatar: "" })}
+                    >
+                      Clear
+                    </Button>
                   )}
-                </SelectContent>
-              </Select>
+                </div>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-text-secondary">Font</Label>
+              <p className="font-mono text-sm text-text-primary py-1.5">JetBrains Mono</p>
             </div>
           </div>
         )}

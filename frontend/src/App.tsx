@@ -21,9 +21,15 @@ function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [providerReady, setProviderReady] = useState(false);
   const [projectDir, setProjectDir] = useState("");
+  const [avatar, setAvatar] = useState("");
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    GetSettings().then((s) => setProjectDir(s.default_project_dir)).catch(() => {});
+    GetSettings().then((s) => {
+      setProjectDir(s.default_project_dir);
+      setAvatar(s.avatar || "");
+      setUserName(s.name || "");
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -82,7 +88,7 @@ function App() {
     <div className="flex h-screen flex-col bg-background text-text-primary">
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <ChatPanel onSend={handleSend} providerReady={providerReady} />
+        <ChatPanel onSend={handleSend} providerReady={providerReady} avatar={avatar} userName={userName} />
       </div>
       <StatusBar
         provider={provider}
@@ -101,6 +107,8 @@ function App() {
           GetSettings().then((s) => {
             const saved = s.providers?.[provider]?.default_model;
             if (saved) setModel(saved);
+            setAvatar(s.avatar || "");
+            setUserName(s.name || "");
           }).catch(() => {});
         }}
       />

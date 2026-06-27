@@ -2,15 +2,18 @@ import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { Bot } from "lucide-react";
 import type { Message } from "@/lib/store/chat";
 import { cn } from "@/lib/utils";
 
 interface ChatBubbleProps {
   message: Message;
   isStreaming?: boolean;
+  avatar?: string;
+  userName?: string;
 }
 
-export function ChatBubble({ message, isStreaming }: ChatBubbleProps) {
+export function ChatBubble({ message, isStreaming, avatar, userName }: ChatBubbleProps) {
   const isUser = message.role === "user";
 
   const components = useMemo(
@@ -64,8 +67,8 @@ export function ChatBubble({ message, isStreaming }: ChatBubbleProps) {
       )}
     >
       {!isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/20 font-mono text-xs text-accent">
-          IG
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent/20 text-accent">
+          <Bot className="h-4 w-4" />
         </div>
       )}
       <div
@@ -90,8 +93,12 @@ export function ChatBubble({ message, isStreaming }: ChatBubbleProps) {
         )}
       </div>
       {isUser && (
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent font-mono text-xs text-white">
-          U
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-accent font-mono text-xs text-white">
+          {avatar ? (
+            <img src={avatar} className="h-full w-full object-cover" alt={userName || "User"} />
+          ) : (
+            (userName?.[0] || "U").toUpperCase()
+          )}
         </div>
       )}
     </div>

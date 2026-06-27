@@ -137,6 +137,8 @@ export namespace settings {
 	    default_license: string;
 	    default_project_dir: string;
 	    font: string;
+	    name: string;
+	    avatar: string;
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -150,6 +152,8 @@ export namespace settings {
 	        this.default_license = source["default_license"];
 	        this.default_project_dir = source["default_project_dir"];
 	        this.font = source["font"];
+	        this.name = source["name"];
+	        this.avatar = source["avatar"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

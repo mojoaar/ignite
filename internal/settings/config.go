@@ -18,6 +18,8 @@ type Config struct {
 	DefaultLicense    string                    `json:"default_license"`
 	DefaultProjectDir string                    `json:"default_project_dir"`
 	Font              string                    `json:"font"`
+	Name              string                    `json:"name"`
+	Avatar            string                    `json:"avatar"`
 }
 
 func configPath() (string, error) {
