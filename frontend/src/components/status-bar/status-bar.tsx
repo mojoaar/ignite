@@ -39,8 +39,9 @@ export function StatusBar({
     const msgs = useChatStore.getState().messages;
     if (msgs.length === 0) return -1;
     const lastPhase = msgs[msgs.length - 1].phase || "";
+    if (!lastPhase) return -1;
     const idx = PHASE_LABELS.findIndex((l) => l.toLowerCase() === lastPhase);
-    return idx >= 0 ? idx : Math.min(Math.floor(msgs.length / 2), 4);
+    return idx >= 0 ? idx : -1;
   })();
 
   useEffect(() => {

@@ -41,7 +41,8 @@ export function useConversation() {
 
   const sendMessage = useCallback(
     async (provider: string, model: string, content: string) => {
-      const phaseIdx = Math.min(Math.floor(messages.length / 2), 4);
+      const userMsgCount = messages.filter((m) => m.role === "user").length;
+      const phaseIdx = Math.min(Math.floor(userMsgCount / 3), 4);
       const phase = PHASE_LABELS[phaseIdx] || "generation";
       const userMsg = {
         id: crypto.randomUUID(),
