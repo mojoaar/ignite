@@ -16,6 +16,8 @@ generates project specs, agent guides, implementation plans, and READMEs.
 - **Model Cache** — Background sync every 15 minutes, instant dropdowns
 - **Native macOS** — Menu bar, keyboard shortcuts, signed .app bundle, flame icon
 
+![Ignite Screenshot](ignite.png)
+
 ## Quick Start
 
 ```sh
