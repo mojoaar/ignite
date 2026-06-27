@@ -61,7 +61,7 @@
         <h3>Model Selection</h3>
         <p>Model lists are cached in a local SQLite database and refreshed every 15 minutes. You can browse models even without an API key configured — Ignite shows a default list. When you configure a key, live models replace the defaults on the next refresh cycle.</p>
 
-        <h2>Appearance Tab</h2>
+        <h2>Preferences Tab</h2>
 
         <h3>Theme</h3>
         <p>Switch between dark mode (default) and light mode. The change applies immediately — no restart needed. Your preference is saved to <code>~/.ignite/config.json</code>.</p>
@@ -72,8 +72,17 @@
         <h3>Default Project Directory</h3>
         <p>Where Ignite writes output files. Defaults to <code>~/Development</code>. Change this to your preferred workspace location.</p>
 
+        
+        <h3>Window Size</h3>
+        <p>Choose from 5 preset window sizes: Small (1024x768), Medium (1440x900), Large (1920x1080), 4K (2560x1440), and Full Screen. The window resizes immediately on selection.</p>
+
+        <h3>Display Name</h3>
+        <p>Set your display name. This name appears in chat bubbles and is saved to your configuration.</p>
+
+        <h3>Avatar</h3>
+        <p>Upload a profile picture via the Choose button. Images are cropped to a square and resized to 128x128 pixels before being stored as a base64 data URL in your configuration. Click Clear to remove your avatar and use the default initial letter instead.</p>
         <h3>Font</h3>
-        <p>Choose from 10 monospace fonts. JetBrains Mono, Fira Code, IBM Plex Mono, Source Code Pro, and Roboto Mono are bundled with the app for offline use. Other fonts require system installation or fall back to your system monospace.</p>
+        <p>JetBrains Mono is bundled with the app for offline use.</p>
 
         <h2>Configuration File</h2>
         <p>All settings are persisted in <code>~/.ignite/config.json</code>. You can also edit this file directly if you prefer. The OS keychain stores API keys separately.</p>

@@ -25,7 +25,7 @@
 | State              | Zustand 5                                             |
 | Markdown Rendering | react-markdown + react-syntax-highlighter (oneDark)   |
 | Icons              | lucide-react (Flame logo)                              |
-| Fonts              | JetBrains Mono, Fira Code, IBM Plex Mono, Roboto Mono, Source Code Pro (bundled via @fontsource) |
+| Fonts              | JetBrains Mono (bundled via @fontsource)                |
 | Backend            | Go 1.24+                                              |
 | LLM Providers      | OpenCode Go, OpenCode Zen, DeepSeek               |
 | Template Engine    | Go text/template + sprig v3 + embed                   |

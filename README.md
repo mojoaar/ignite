@@ -11,7 +11,10 @@ generates project specs, agent guides, implementation plans, and READMEs.
 - **5-Phase AI Interview** — Identity → Tech Stack → Features → Architecture → Generation
 - **Multi-Provider** — [OpenCode Go](https://opencode.ai/docs/go/), [OpenCode Zen](https://opencode.ai/docs/zen/), [DeepSeek](https://api-docs.deepseek.com/quick_start/pricing)
 - **Template-Driven Output** — project.md, agents.md, plan.md, README.md
-- **Dark/Light Theme** — Nordic-inspired dark palette, system sans-serif, offline fonts
+- **Structured Interview** — 5-phase system prompt with auto-detected phase progression
+- **JSON Project Parsing** — AI auto-names projects and updates sidebar in real-time
+- **Web Fetch** — paste URLs in chat, Ignite fetches and injects context for the LLM
+- **Dark/Light Theme** — Nordic-inspired dark palette, JetBrains Mono, offline font
 - **Project History** — SQLite persistence, resume mid-project from sidebar
 - **Model Cache** — Background sync every 15 minutes, instant dropdowns
 - **Native macOS** — Menu bar, keyboard shortcuts, signed .app bundle, flame icon
@@ -53,7 +56,7 @@ make publish
 | Database           | SQLite (modernc.org/sqlite, pure Go, no CGO)    |
 | Secret Storage     | OS Keychain (go-keyring)                        |
 | Logging            | zerolog                                         |
-| Fonts              | JetBrains Mono, Fira Code, IBM Plex Mono, Source Code Pro, Roboto Mono (bundled) |
+| Fonts              | JetBrains Mono (bundled via @fontsource) |
 
 ## Development
 
@@ -77,28 +80,34 @@ AGPL-3.0 — see [LICENSE](LICENSE)
 - Inline project rename via pencil icon on hover (sidebar)
 - Editable API key field + error feedback on settings save
 - Connection indicator refreshes immediately after saving API key
-- Open Folder (Cmd+O) with native dialog + tilde expansion fix
-- Current project directory displayed in status bar
-- Share API key between OpenCode Go and Zen automatically
-- Delete project from sidebar (Trash2 icon on hover)
 - Window size presets: Small, Medium, Large, 4K, Full Screen
 - User profile: display name + avatar upload in Preferences
 - Bot lucide icon for AI in chat, user avatar for your messages
 - Removed extra fonts (JetBrains Mono only), DMG: 7.2M → 6.8M
 - Path scanner reads file contents for referenced projects
 - Corrected OpenCode Go/Zen model lists from their actual APIs
-- Removed Claude as standalone provider
+- Phase tracking with auto-detected conversation progress
+- Generate project files — LLM extracts context, renders templates, saves output
+- Stream fallback — graceful retry via non-streaming on failure
+- Generate icon color indicator (red → amber → green based on phase)
+- ErrorBoundary for crash resilience
+- Scanner test coverage (6 tests)
+- Web fetch — paste URLs in chat, Ignite fetches context
 - Preferences tab (renamed from Appearance) with folder picker
 - Providers docs page shows separate Go and Zen model lists
 - Deploy target in Makefile + local deploy script for Caddy
 
-### v0.1.3
+<details>
+<summary>v0.1.3</summary>
 
 - Removed Claude provider (3 providers: OpenCode Go, OpenCode Zen, DeepSeek)
-- Open Folder (Cmd+O) with native macOS dialog
+- Open Folder (Cmd+O) with native macOS dialog + tilde expansion fix
 - Current project directory displayed in status bar
 - Delete project from sidebar (Trash2 icon on hover)
+- Share API key between OpenCode Go and Zen automatically
 - About modal centering fixes
+
+</details>
 
 <details>
 <summary>v0.1.2</summary>

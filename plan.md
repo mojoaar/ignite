@@ -245,6 +245,8 @@
 
 | Version | Date       | Changes                                                    |
 | :------ | :--------  | :--------------------------------------------------------- |
+| 0.1.4   | 2026-06-27 | System prompt, JSON parsing, web fetch, generate files, phase tracking, hardening |
+| 0.1.3   | 2026-06-27 | Claude removed, Open Folder, project deletion, shared API keys, status bar fixes |
 | 0.1.2   | 2026-06-27 | Landing site, docs, SEO, favicons, model sync, config fix, Copilot removed |
 | 0.1.1   | 2026-06-27 | Model cache, display names, fallback lists, offline fonts, settings UX |
 | 0.1.0   | 2026-06-26 | Initial release — full desktop app with 4 providers        |
