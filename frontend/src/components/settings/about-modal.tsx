@@ -27,15 +27,15 @@ export function AboutModal({ open, onClose }: AboutModalProps) {
         <DialogHeader>
           <DialogTitle className="font-mono text-lg">Ignite</DialogTitle>
         </DialogHeader>
-        <div className="space-y-3 text-sm text-text-secondary text-center">
-          <p className="font-mono text-base text-text-primary">
+        <div className="space-y-3 text-sm text-text-secondary">
+          <p className="font-mono text-base text-text-primary text-center">
             Provisioning with a heartbeat
           </p>
-          <p className="font-mono text-sm text-accent">
+          <p className="font-mono text-sm text-accent text-center">
             v{version}
           </p>
-          <p className="text-left">
-            A desktop GUI for provisioning new software projects with Kvasir-level
+          <p>
+            A desktop GUI for provisioning new software
             documentation quality. Conducts AI-guided interviews and generates
             project specs, agent guides, implementation plans, and READMEs.
           </p>
