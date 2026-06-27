@@ -76,11 +76,6 @@ export function StatusBar({
           {projectDir.replace(/^\/Users\/[^/]+\//, "~/")}
         </span>
       )}
-      {phaseIdx >= 0 && (
-        <span className="font-mono text-[10px] text-accent-light whitespace-nowrap">
-          Phase {phaseIdx + 1}/5: {PHASE_LABELS[phaseIdx]}
-        </span>
-      )}
       <select
         value={provider}
         onChange={(e) => onProviderChange(e.target.value)}
@@ -148,6 +143,11 @@ export function StatusBar({
       >
         <Download className="h-4 w-4" />
       </button>
+      {phaseIdx >= 0 && (
+        <span className="font-mono text-[10px] text-accent-light whitespace-nowrap ml-2">
+          Phase {phaseIdx + 1}/5: {PHASE_LABELS[phaseIdx]}
+        </span>
+      )}
     </div>
   );
 }
