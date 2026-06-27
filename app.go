@@ -161,9 +161,25 @@ func (a *App) SaveProjectFiles(projectDir string, files *templates.ProjectFiles)
 }
 
 func (a *App) ListProviderModels(providerName string) ([]providers.Model, error) {
-	p, err := a.GetProvider(providerName)
-	if err != nil {
-		return nil, err
+	var p providers.LLMProvider
+	key, err := settings.GetAPIKey(providerName)
+	switch providerName {
+	case "claude":
+		p = providers.NewClaudeProvider(key)
+	case "deepseek":
+		p = providers.NewDeepSeekProvider(key)
+	case "github-copilot":
+		p = providers.NewGitHubCopilotProvider(key)
+	default:
+		if err != nil {
+			return nil, fmt.Errorf("no API key for %s", providerName)
+		}
+		switch providerName {
+		case "opencode-go", "opencode-zen":
+			p = providers.NewOpenCodeProvider(key)
+		default:
+			return nil, fmt.Errorf("unknown provider: %s", providerName)
+		}
 	}
 	return p.ListModels(a.ctx)
 }
