@@ -10,6 +10,7 @@ import (
 	"ignite/internal/templates"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -268,9 +269,14 @@ func (a *App) AnalyzePath(path string) string {
 }
 
 func (a *App) SelectDirectory() string {
+	dirPath := a.cfg.DefaultProjectDir
+	if strings.HasPrefix(dirPath, "~/") {
+		home, _ := os.UserHomeDir()
+		dirPath = filepath.Join(home, dirPath[2:])
+	}
 	dir, err := runtime.OpenDirectoryDialog(a.ctx, runtime.OpenDialogOptions{
-		Title:       "Select project folder",
-		DefaultDirectory: a.cfg.DefaultProjectDir,
+		Title:            "Select project folder",
+		DefaultDirectory: dirPath,
 	})
 	if err != nil || dir == "" {
 		return a.cfg.DefaultProjectDir
