@@ -56,7 +56,10 @@ type openCodeModelsResponse struct {
 
 func (p *OpenCodeProvider) Chat(ctx context.Context, model string, messages []Message) (*ChatResponse, error) {
 	body := openCodeChatRequest{Model: model, Messages: messages, Stream: false}
-	reqBody, _ := json.Marshal(body)
+	reqBody, err := json.Marshal(body)
+	if err != nil {
+		return nil, fmt.Errorf("opencode: marshal request: %w", err)
+	}
 	req, err := http.NewRequestWithContext(ctx, "POST", p.endpoint+"/chat/completions", bytes.NewReader(reqBody))
 	if err != nil {
 		return nil, fmt.Errorf("opencode: create request: %w", err)
@@ -88,7 +91,10 @@ func (p *OpenCodeProvider) Chat(ctx context.Context, model string, messages []Me
 
 func (p *OpenCodeProvider) ChatStream(ctx context.Context, model string, messages []Message, onChunk func(string) error) error {
 	body := openCodeChatRequest{Model: model, Messages: messages, Stream: true}
-	reqBody, _ := json.Marshal(body)
+	reqBody, err := json.Marshal(body)
+	if err != nil {
+		return fmt.Errorf("opencode: marshal request: %w", err)
+	}
 	req, err := http.NewRequestWithContext(ctx, "POST", p.endpoint+"/chat/completions", bytes.NewReader(reqBody))
 	if err != nil {
 		return fmt.Errorf("opencode: create request: %w", err)
@@ -142,7 +148,10 @@ func (p *OpenCodeProvider) ListModels(ctx context.Context) ([]Model, error) {
 }
 
 func (p *OpenCodeProvider) listModelsFromAPI(ctx context.Context) ([]Model, error) {
-	req, _ := http.NewRequestWithContext(ctx, "GET", p.endpoint+"/models", nil)
+	req, err := http.NewRequestWithContext(ctx, "GET", p.endpoint+"/models", nil)
+	if err != nil {
+		return nil, fmt.Errorf("opencode: create request: %w", err)
+	}
 	req.Header.Set("Authorization", "Bearer "+p.apiKey)
 
 	resp, err := p.client.Do(req)

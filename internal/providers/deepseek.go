@@ -48,7 +48,10 @@ type deepSeekStreamChunk struct {
 
 func (p *DeepSeekProvider) Chat(ctx context.Context, model string, messages []Message) (*ChatResponse, error) {
 	body := deepSeekChatRequest{Model: model, Messages: messages, Stream: false}
-	reqBody, _ := json.Marshal(body)
+	reqBody, err := json.Marshal(body)
+	if err != nil {
+		return nil, fmt.Errorf("deepseek: marshal request: %w", err)
+	}
 	req, err := http.NewRequestWithContext(ctx, "POST", p.endpoint+"/chat/completions", bytes.NewReader(reqBody))
 	if err != nil {
 		return nil, fmt.Errorf("deepseek: create request: %w", err)
@@ -80,7 +83,10 @@ func (p *DeepSeekProvider) Chat(ctx context.Context, model string, messages []Me
 
 func (p *DeepSeekProvider) ChatStream(ctx context.Context, model string, messages []Message, onChunk func(string) error) error {
 	body := deepSeekChatRequest{Model: model, Messages: messages, Stream: true}
-	reqBody, _ := json.Marshal(body)
+	reqBody, err := json.Marshal(body)
+	if err != nil {
+		return fmt.Errorf("deepseek: marshal request: %w", err)
+	}
 	req, err := http.NewRequestWithContext(ctx, "POST", p.endpoint+"/chat/completions", bytes.NewReader(reqBody))
 	if err != nil {
 		return fmt.Errorf("deepseek: create request: %w", err)
