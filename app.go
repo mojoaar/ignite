@@ -48,11 +48,10 @@ func (a *App) startup(ctx context.Context) {
 
 func (a *App) ensureProviderConfigs() {
 	knownProviders := map[string]string{
-		"opencode-go":    "https://opencode.ai/zen/go/v1",
-		"opencode-zen":   "https://opencode.ai/zen/v1",
-		"claude":         "https://api.anthropic.com/v1/messages",
-		"deepseek":       "https://api.deepseek.com/v1",
-		"github-copilot": "https://api.github.com/copilot",
+		"opencode-go":  "https://opencode.ai/zen/go/v1",
+		"opencode-zen": "https://opencode.ai/zen/v1",
+		"claude":       "https://api.anthropic.com/v1/messages",
+		"deepseek":     "https://api.deepseek.com/v1",
 	}
 	for pid := range a.cfg.Providers {
 		if _, ok := knownProviders[pid]; !ok {
@@ -78,7 +77,7 @@ func (a *App) GetCachedModels(providerName string) ([]history.ProviderModel, err
 }
 
 func (a *App) refreshProviderModels() {
-	for _, name := range []string{"opencode-go", "opencode-zen", "claude", "deepseek", "github-copilot"} {
+	for _, name := range []string{"opencode-go", "opencode-zen", "claude", "deepseek"} {
 		key, _ := settings.GetAPIKey(name)
 		var p providers.LLMProvider
 		switch name {
@@ -162,8 +161,6 @@ func (a *App) GetProvider(name string) (providers.LLMProvider, error) {
 		return providers.NewClaudeProvider(key), nil
 	case "deepseek":
 		return providers.NewDeepSeekProvider(key), nil
-	case "github-copilot":
-		return providers.NewGitHubCopilotProvider(key), nil
 	default:
 		return nil, fmt.Errorf("unknown provider: %s", name)
 	}
@@ -200,8 +197,6 @@ func (a *App) ValidateProviderKey(providerName, key string) error {
 		p = providers.NewClaudeProvider(key)
 	case "deepseek":
 		p = providers.NewDeepSeekProvider(key)
-	case "github-copilot":
-		p = providers.NewGitHubCopilotProvider(key)
 	default:
 		return fmt.Errorf("unknown provider: %s", providerName)
 	}
@@ -242,8 +237,6 @@ func (a *App) ListProviderModels(providerName string) ([]providers.Model, error)
 		p = providers.NewClaudeProvider(key)
 	case "deepseek":
 		p = providers.NewDeepSeekProvider(key)
-	case "github-copilot":
-		p = providers.NewGitHubCopilotProvider(key)
 	default:
 		if err != nil {
 			return nil, fmt.Errorf("no API key for %s", providerName)

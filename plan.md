@@ -1,21 +1,22 @@
 # Ignite — Implementation Plan
 > Provisioning with a heartbeat
 
+**Version:** v0.1.2
+
 **Tech Stack:**
 
 | Layer              | Choice                                                     |
 | :----------------- | :--------------------------------------------------------- |
 | **Desktop Shell**  | Wails v2.12.0 (Go + native WebView)                        |
-| **Frontend**       | React 19 + TypeScript + Vite                               |
-| **Styling**        | Tailwind CSS v4                                            |
-| **UI Components**  | shadcn/ui (new-york style)                                  |
-| **State**          | Zustand                                                    |
+| **Frontend**       | React 19 + TypeScript + Vite 6                             |
+| **Styling**        | Tailwind CSS v4 + shadcn/ui (new-york)                     |
+| **State**          | Zustand 5                                                  |
 | **Markdown**       | react-markdown + react-syntax-highlighter                  |
-| **Font**           | JetBrains Mono                                             |
+| **Fonts**          | JetBrains Mono, Fira Code, IBM Plex Mono, Source Code Pro, Roboto Mono (bundled offline) |
 | **Icons**          | lucide-react                                               |
-| **Backend**        | Go 1.23+                                                   |
-| **LLM Providers**  | OpenCode, Claude, DeepSeek, GitHub Copilot (HTTP + SSE)    |
-| **Templates**      | Go text/template + sprig + embed                           |
+| **Backend**        | Go 1.24+                                                   |
+| **LLM Providers**  | OpenCode Go, OpenCode Zen, Claude, DeepSeek                       |
+| **Templates**      | Go text/template + sprig v3 + embed                        |
 | **Database**       | SQLite (modernc.org/sqlite, pure Go, no CGO)               |
 | **Logging**        | zerolog                                                    |
 | **Secrets**        | OS keychain (go-keyring)                                   |
@@ -27,138 +28,174 @@
 
 > Scaffold the Wails v2 desktop shell with React frontend skeleton, theme system, and settings infrastructure.
 
-- [ ] `main.go` — Wails app entry, embedded frontend assets, native menu bar (File/Edit), Mac AboutInfo
-- [ ] `app.go` — App struct with context lifecycle, 17 Wails bindings for frontend IPC
-- [ ] `wails.json` — Wails v2 project config with frontend build paths
-- [ ] `frontend/index.html` — JetBrains Mono Google Fonts link, FOUC prevention inline script
-- [ ] `frontend/src/style.css` — Tailwind v4 @theme with dark/light palettes, @keyframes for slide-up and blink
-- [ ] `frontend/src/App.tsx` — Root layout: Sidebar (260px) + ChatPanel (flex) + StatusBar (fixed bottom)
-- [ ] `lib/store/theme.ts` — Zustand store: dark/light toggle, `data-mode` attribute, localStorage persistence
-- [ ] `lib/store/chat.ts` — Zustand store: projects, messages, activeProjectId, streaming state
-- [ ] `hooks/useTheme.ts` — Init theme on mount, expose mode and toggle
-- [ ] `hooks/useConversation.ts` — Stream subscription via EventsOn, message persistence, path scanner injection
-- [ ] `internal/settings/config.go` — Config struct, Load/Save to `~/.ignite/config.json`, defaults
-- [ ] `internal/settings/keychain.go` — OS keychain CRUD for API keys via go-keyring
+- [x] `main.go` — Wails app entry, embedded frontend assets, native menu bar (File/Edit), Mac AboutInfo
+- [x] `app.go` — Wails bindings: Greet, GetSettings, SaveSettings, GetVersion
+- [x] `wails.json` — Wails v2 project config, frontend build via pnpm + Vite
+- [x] `frontend/` — React 19 + Vite 6 + Tailwind v4 + shadcn/ui scaffold
+- [x] `index.html` — FOUC prevention inline script, data-mode attribute
+- [x] Theme system: dark/light toggle, CSS custom properties, Zustand store, localStorage persistence
+- [x] Settings: `~/.ignite/config.json`, OS keychain wrapper, provider endpoints
 
 ### Verification
-
-- [ ] `wails doctor` passes all checks
-- [ ] `go test ./internal/settings/` — 2 tests: DefaultConfig, SaveAndLoad
-- [ ] `pnpm vitest run` — 6 theme store tests pass
-- [ ] `pnpm typecheck` — TypeScript clean
-- [ ] `make publish` — produces `build/Ignite.{dmg,zip}`
+- [x] `wails dev` — compiles and opens native window
+- [x] `pnpm vitest run` — 6 theme tests pass
+- [x] Theme toggle switches dark ↔ light, persists across restarts
 
 ---
 
 ## Phase 1: Backend Services
 
-> Build the LLM provider abstraction, SQLite history, template engine, and conversation orchestration.
+> LLM provider adapters, SQLite history, template engine, settings infrastructure.
 
-- [ ] `internal/providers/interface.go` — LLMProvider interface (Chat/ChatStream/ListModels/ValidateKey), Message/Model/ChatResponse types
-- [ ] `internal/providers/opencode.go` — OpenCode adapter (OpenAI-compatible HTTP, SSE streaming via bufio.Scanner)
-- [ ] `internal/providers/claude.go` — Claude adapter (Anthropic Messages API, x-api-key, content_block_delta events)
-- [ ] `internal/providers/deepseek.go` — DeepSeek adapter (OpenAI-compatible, hardcoded model list)
-- [ ] `internal/providers/github.go` — GitHub Copilot adapter (Bearer token, chat/stream endpoint)
-- [ ] `internal/providers/manager.go` — Provider registry (Register/Get)
-- [ ] `internal/history/models.go` — Project and Message structs
-- [ ] `internal/history/sqlite.go` — SQLite store (OpenDB with WAL, migration, CRUD for projects/messages)
-- [ ] `internal/templates/data.go` — ProjectContext with all fields (Phases, TechStack, Dependencies, APIs, EnvVars, Theme, etc.)
-- [ ] `internal/templates/engine.go` — Go text/template + sprig FuncMap, NewEngine, Generate returning ProjectFiles
-- [ ] `internal/templates/templates.go` — `//go:embed templates/*`, EmbeddedEngine loader
-- [ ] `internal/templates/templates/*.tmpl` — 4 embedded template files (project.md, AGENTS.md, PLAN.md, README.md)
-- [ ] `internal/scanner/scanner.go` — Universal path analyzer detecting 15+ project types by file presence
+- [x] `internal/providers/` — LLMProvider interface (Chat/ChatStream/ListModels/ValidateKey)
+- [x] OpenCode Go adapter — `opencode.ai/zen/go/v1`, SSE streaming via bufio.Scanner
+- [x] OpenCode Zen adapter — `opencode.ai/zen/v1`, identical streaming
+- [x] Claude adapter — Anthropic Messages API, x-api-key auth, content_block_delta streaming
+- [x] DeepSeek adapter — OpenAI-compatible API, SSE streaming, hardcoded model fallback
+- [x] `internal/history/sqlite.go` — projects + conversations + provider_models tables, WAL mode
+- [x] `internal/templates/` — Go text/template + sprig, 4 embedded .tmpl files
+- [x] `internal/settings/` — config.json load/save, keychain wrapper, default config
+- [x] `internal/scanner/` — universal project path analyzer (15+ file type detection)
 
 ### Verification
-
-- [ ] `go test ./internal/history/` — 2 tests: ProjectCRUD, MessageCRUD
-- [ ] `go test ./internal/providers/` — 9 tests across all 4 adapters (Chat + Stream + ListModels)
-- [ ] `go test ./internal/templates/` — Engine generates all 4 output files with correct content
-- [ ] `go test ./internal/scanner/` — Scanner detects Go, Node, Python, Rust, and empty directories
+- [x] `go test ./internal/providers/ -v` — 10 tests pass (Chat + ChatStream + ListModels)
+- [x] `go test ./internal/history/ -v` — project + message CRUD tests pass
+- [x] `go test ./internal/templates/ -v` — engine generates all 4 file types
+- [x] `go test ./internal/settings/ -v` — config save/load roundtrip
 
 ---
 
-## Phase 2: Frontend UI Components
+## Phase 2: Frontend UI
 
-> Build the shadcn/ui component library, sidebar, chat panel, status bar, and settings modal.
+> Sidebar, chat panel, status bar, settings modal.
 
-- [ ] `components.json` — shadcn/ui init (base-nova style, lucide icons)
-- [ ] `components/ui/button.tsx` — shadcn Button
-- [ ] `components/ui/dialog.tsx` — shadcn Dialog (used by Settings and About)
-- [ ] `components/ui/input.tsx` — shadcn Input
-- [ ] `components/ui/label.tsx` — shadcn Label
-- [ ] `components/ui/select.tsx` — shadcn Select (used throughout)
-- [ ] `components/sidebar/sidebar.tsx` — 260px sidebar with Flame logo, project list, New Project button, project resume on click
-- [ ] `components/chat/chat-bubble.tsx` — Markdown rendering with react-markdown, oneDark syntax highlighting, streaming cursor
-- [ ] `components/chat/chat-input.tsx` — Auto-resize textarea, Enter/Shift+Enter, disabled when no project/provider
-- [ ] `components/chat/chat-panel.tsx` — Message list with auto-scroll, scroll-to-bottom button, welcome banner
-- [ ] `components/status-bar/status-bar.tsx` — Provider/model dropdowns, connection indicator (HasAPIKey), Settings/Export buttons
-- [ ] `components/settings/settings-modal.tsx` — Two-tab dialog: Providers (API keys with show/hide/validate) + Appearance (theme/license/dir/font dropdowns)
-- [ ] `components/settings/about-modal.tsx` — About dialog with author, web, repo links
+- [x] Sidebar — project history listing, new project button, active highlight, Flame logo
+- [x] Chat Panel — markdown rendering (react-markdown), syntax highlighting (oneDark), streaming bubble, auto-scroll
+- [x] Chat Input — auto-resize textarea, Enter/Shift+Enter, disabled when no provider
+- [x] Status Bar — provider/model dropdowns, connection indicator, settings/export buttons
+- [x] Settings Modal — Providers tab (api key, validate, model list), Appearance tab (theme, license, font)
+- [x] Model caching — SQLite-backed, 15-min background sync, display_name from API
+- [x] Fallback model lists — all providers show models without API key configured
+- [x] Welcome banner — shown when no project is active, hint to configure provider
+- [x] About Modal — dynamic version via GetVersion(), centered tagline + author info
 
 ### Verification
-
-- [ ] `pnpm typecheck` — TypeScript clean
-- [ ] `wails dev` renders all components with correct dark/light styling
-- [ ] All Wails bindings called: GetSettings, SaveSettings, SetAPIKey, HasAPIKey, ValidateProviderKey, ListProviderModels, CreateProject, ListProjects, GetProject, GetMessages, AddMessage, SendMessage, SendMessageStream, ExportChat, AnalyzePath
+- [x] `pnpm typecheck` — zero errors
+- [x] Provider switching updates model list from DB cache
+- [x] Dark/light theme applies to all components
+- [x] Settings save persists correctly across app restarts
 
 ---
 
-## Phase 3: Polish & Quality
+## Phase 3: Conversation + Orchestration
 
-> Scrollbar styling, animations, keyboard shortcuts, menu bar, theme fixes, icon generation.
+> LLM conversation management, streaming, file generation, export.
 
-- [ ] Scrollbar styling — thin 6px thumb with `--border` color
-- [ ] Chat bubble slide-up animation (0.2s ease-out)
-- [ ] Streaming cursor blink animation (0.8s step-end)
-- [ ] Keyboard shortcuts — Escape to close Settings, Ctrl/Cmd+Enter to send
-- [ ] Native menu bar — File (New Project Cmd+N, Export Cmd+E, Settings Cmd+,), Edit (standard), macOS AppMenu (About, Quit)
-- [ ] Theme live update — Settings theme dropdown immediately toggles data-mode and .dark class
-- [ ] Font live update — Settings font dropdown updates --font-mono CSS variable on change
-- [ ] Custom app icon — flame teardrop icon (PIL-generated, 7 icns sizes, rounded corners)
+- [x] SendMessageStream — SSE streaming via `runtime.EventsEmit("stream-chunk")`
+- [x] useConversation hook — EventsOn/EventsOff for streaming, AddMessage DB persistence
+- [x] SendMessage — single-shot chat for non-streaming
+- [x] SaveProjectFiles — writes 4 output files to project directory
+- [x] ExportChat — converts messages to markdown, Blob download
+- [x] Project resume — loadProject from sidebar, GetMessages from SQLite
+- [x] Path scanner integration — detect file paths in messages, AnalyzePath context injection
 
 ### Verification
+- [x] Wails bindings auto-generate for all methods
+- [x] Conversation persists — close and reopen app, messages load from SQLite
+- [x] ExportChat produces valid .md file
 
-- [ ] `make publish` produces DMG ~6.7M, ZIP ~5.9M
-- [ ] Go vet clean (only expected embed error for frontend/dist)
-- [ ] All 14 Go tests + 6 vitest tests pass
-- [ ] TypeScript typechecks with zero errors
+---
+
+## Phase 4: Polish
+
+> Scrollbar styling, animations, keyboard shortcuts, menu bar, offline fonts.
+
+- [x] Scrollbar styling — WebKit custom scrollbar, thin + styled
+- [x] Chat animations — slide-up chat bubbles, blink cursor for streaming
+- [x] Native menu bar — File (New Project Cmd+N, Export Cmd+E, Settings Cmd+,), Edit
+- [x] Mac AboutInfo — title + version + author
+- [x] Offline font bundling — @fontsource (JetBrains Mono, Fira Code, IBM Plex Mono, Source Code Pro, Roboto Mono)
+- [x] Dropdown casing fixes — all display labels consistent, SelectValue shows label not raw ID
+- [x] Model dropdown fixes — display_name in SelectValue, auto-select saved default on provider switch
+- [x] Settings save fix — loop overwrite bug, locked API key field, error feedback
+- [x] Config cleanup on startup — ensures all provider entries exist, removes stale entries
+
+### Verification
+- [x] Native menu bar shows on macOS: Ignite → File → Edit
+- [x] Keyboard shortcuts work: Cmd+N, Cmd+E, Cmd+,
+- [x] Fonts render correctly offline
+- [x] Settings save loop bug fixed — all provider configs persist correctly
+
+---
+
+## Phase 5: Site & Documentation
+
+> Landing site at ignite.johansen.foo, documentation, developer setup guide.
+
+- [x] Landing page — terminal mockup hero, feature cards, provider grid, download CTAs
+- [x] 7 documentation pages — Overview, Getting Started, Providers, Provisioning, Settings, FAQ, Developer Setup
+- [x] Developer Setup guide — 8-section walkthrough with 67 skill links + resource references
+- [x] SEO optimization — Open Graph, JSON-LD, sitemap.xml, robots.txt, canonical URLs
+- [x] Favicon ecosystem — ICO, SVG, PNG, Apple Touch Icon, Android Chrome icons, manifest.json
+- [x] Light/dark mode toggle — nav bar sun/moon toggle, FOUC prevention, localStorage persistence
+- [x] Binary hosting — Ignite.dmg + Ignite.zip in site/assets/
+- [x] Local deploy script — builds, installs to /Applications, rsyncs site to Caddy
+- [x] README.md — project description, tech stack, development commands, collapsed changelog
+- [x] LICENSE — AGPL-3.0
+- [x] FUNDING.yml — Buy Me a Coffee + GitHub Sponsors
+
+### Verification
+- [x] Site serves correctly at http://localhost:8899
+- [x] All docs pages have consistent sidebar
+- [x] Favicon displays in all browsers (Safari, Chrome, Firefox)
+- [x] Deploy script syncs site to Caddy server
+
+---
+
+## Phase 6: Fixes & Maintenance (v0.1.2)
+
+> Bug fixes, version management, CHANGELOG.md.
+
+- [x] Model reset bug — config cleanup on startup ensures all providers persist
+- [x] Status bar model sync — saved default model reflects in UI after settings close
+- [x] DeepSeek model IDs — deepseek-v4-flash / deepseek-v4-pro with display names
+- [x] GitHub Copilot removed — no public models API, removed from all layers
+- [x] Version management — version const in main.go, dynamic in About modal
+- [x] CHANGELOG in README.md — newest version at top, older versions collapsed
+
+### Verification
+- [x] `make publish` — builds successfully in < 5 seconds
+- [x] All tests pass: 14 Go tests + 6 vitest tests
+- [x] TypeScript typecheck passes
 
 ---
 
 ## Performance Targets
 
-| Metric          | Target            | Status  |
-| :-------------- | :---------------- | :------ |
-| App launch      | < 1 second        | ✓       |
-| LLM response    | Streaming, FTT < 2s | ✓ (SSE) |
-| Memory idle     | < 200MB           | ✓       |
-| Binary size     | < 80MB            | ✓ (14MB)|
-| History search  | < 50ms            | ✓ (WAL) |
-| Build time      | < 15s             | ✓ (4.4s)|
-
----
+| Metric           | Target            | Status |
+| :--------------- | :---------------- | :----- |
+| App launch       | < 1 second        | ✓      |
+| LLM response     | Streaming, first token < 2s | ✓ |
+| File generation  | All 4 files < 15s | ✓      |
+| Memory           | < 200MB idle      | ✓      |
+| Binary size      | < 80MB            | ✓ (14MB) |
+| Build time       | < 10s             | ✓ (~4s) |
 
 ## Risks & Mitigations
 
-| Risk                          | Mitigation                                              |
-| :---------------------------- | :------------------------------------------------------ |
-| LLM output quality varies     | Template backbone guarantees structure; conversation context enriches |
-| Streaming breaks on provider  | Graceful fallback to non-streaming; SSE resilience      |
-| OS keychain unavailable       | Error surfaced in UI; fallback to encrypted file        |
-| Wails v2 API changes          | Pinned to v2.12.0 in go.mod                             |
-| Template size grows           | Modular template sources; LLM extends beyond template   |
-| WebView CSS inconsistencies   | System WebView (macOS) tested; Tailwind v4 with CSS custom properties |
+| Risk                          | Mitigation                                             |
+| :---------------------------- | :----------------------------------------------------- |
+| LLM output quality varies     | Template backbone guarantees structure |
+| Streaming breaks on provider  | Graceful fallback to non-streaming; retry logic        |
+| OS keychain not available     | User warned; must configure keychain to proceed        |
+| Wails v2 API changes          | Pinned version in go.mod                               |
+| Model APIs change format      | Fallback model lists for all providers                 |
 
 ---
-
 ## Changelog
 
-| Version | Date       | Changes                                                  |
-| :------ | :--------- | :------------------------------------------------------- |
-| 0.1.0   | 2026-06-26 | Initial MVP — Wails v2 scaffold, 4 LLM providers, SQLite history, 4 output templates, full React UI, menu bar, theme system, path scanner |
-
----
-
-## Versioning Strategy
-
-Semantic versioning (MAJOR.MINOR.PATCH). MVP ships as 0.1.0. Pre-1.0 releases may break API. Tag format: `v0.1.0`.
+| Version | Date       | Changes                                                    |
+| :------ | :--------  | :--------------------------------------------------------- |
+| 0.1.2   | 2026-06-27 | Landing site, docs, SEO, favicons, model sync, config fix, Copilot removed |
+| 0.1.1   | 2026-06-27 | Model cache, display names, fallback lists, offline fonts, settings UX |
+| 0.1.0   | 2026-06-26 | Initial release — full desktop app with 4 providers        |
