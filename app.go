@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"ignite/internal/history"
 	"ignite/internal/providers"
@@ -301,6 +302,75 @@ func (a *App) AnalyzePath(path string) string {
 
 func (a *App) AnalyzePathContent(path string) string {
 	return scanner.AnalyzePathContent(path)
+}
+
+func (a *App) GenerateProjectFiles(providerName, model, projectName string, messages []providers.Message) (*templates.ProjectFiles, error) {
+	p, err := a.GetProvider(providerName)
+	if err != nil {
+		return nil, err
+	}
+
+	extractPrompt := `Extract the project context from the conversation above as JSON. Return ONLY valid JSON, no markdown:
+
+{
+  "name": "project-name",
+  "tagline": "short tagline",
+  "description": "project description",
+  "license": "AGPL-3.0",
+  "features": ["feature1", "feature2"],
+  "phases": [{"name": "Phase 0", "description": "...", "tasks": ["task1"]}],
+  "techStack": [{"category": "Frontend", "choice": "React", "version": "19"}],
+  "dependencies": [{"name": "react", "version": "^19.0.0", "why": "UI framework"}],
+  "apis": [{"method": "GET", "path": "/api/users", "desc": "List users", "auth": "Bearer"}],
+  "dbTables": [{"name": "users", "columns": [{"name": "id", "type": "TEXT", "desc": "UUID"}]}],
+  "performance": [{"metric": "App launch", "target": "<1s"}],
+  "risks": [{"risk": "Data loss", "mitigation": "Backups"}],
+  "bannedPackages": [],
+  "envVars": [{"name": "DATABASE_URL", "desc": "Connection string", "default": ""}],
+  "devWorkflow": {"setup": [], "dev": [], "build": [], "test": [], "lint": [], "typeCheck": []}
+}`
+
+	extractMsg := []providers.Message{
+		{Role: "system", Content: extractPrompt},
+		{Role: "user", Content: "Extract the project context from these messages."},
+	}
+
+	resp, err := p.Chat(a.ctx, model, append(extractMsg, messages...))
+	if err != nil {
+		return nil, fmt.Errorf("extract: %w", err)
+	}
+
+	var ctx templates.ProjectContext
+	if err := json.Unmarshal([]byte(resp.Content), &ctx); err != nil {
+		return nil, fmt.Errorf("parse project context: %w", err)
+	}
+
+	engine, err := templates.EmbeddedEngine()
+	if err != nil {
+		return nil, fmt.Errorf("template engine: %w", err)
+	}
+
+	files, err := engine.Generate(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("generate files: %w", err)
+	}
+
+	dirPath := a.cfg.DefaultProjectDir
+	if strings.HasPrefix(dirPath, "~/") {
+		home, _ := os.UserHomeDir()
+		dirPath = filepath.Join(home, dirPath[2:])
+	}
+	projectDir := filepath.Join(dirPath, projectName)
+	if err := os.MkdirAll(projectDir, 0755); err != nil {
+		return nil, fmt.Errorf("create dir: %w", err)
+	}
+
+	os.WriteFile(filepath.Join(projectDir, projectName+".md"), []byte(files.ProjectMD), 0644)
+	os.WriteFile(filepath.Join(projectDir, "agents.md"), []byte(files.AgentsMD), 0644)
+	os.WriteFile(filepath.Join(projectDir, "plan.md"), []byte(files.PlanMD), 0644)
+	os.WriteFile(filepath.Join(projectDir, "README.md"), []byte(files.ReadmeMD), 0644)
+
+	return files, nil
 }
 
 func (a *App) ResizeWindow(width, height int) {

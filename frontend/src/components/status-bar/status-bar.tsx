@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Settings, Download, CheckCircle, XCircle } from "lucide-react";
+import { Settings, Download, CheckCircle, XCircle, FileText } from "lucide-react";
 import { GetCachedModels, HasAPIKey } from "@wails/go/main/App";
 
 const PROVIDERS = [
@@ -16,6 +16,7 @@ interface StatusBarProps {
   onModelChange: (model: string) => void;
   onOpenSettings: () => void;
   onExport: () => void;
+  onGenerate?: () => void;
 }
 
 export function StatusBar({
@@ -26,6 +27,7 @@ export function StatusBar({
   onModelChange,
   onOpenSettings,
   onExport,
+  onGenerate,
 }: StatusBarProps) {
   const [models, setModels] = useState<{ id: string; label: string }[]>([]);
   const [connected, setConnected] = useState<boolean | null>(null);
@@ -107,6 +109,15 @@ export function StatusBar({
         <Settings className="h-4 w-4" />
       </button>
 
+      {onGenerate && (
+        <button
+          onClick={onGenerate}
+          className="rounded p-1 text-text-secondary hover:bg-surface-hover hover:text-text-primary"
+          title="Generate project files"
+        >
+          <FileText className="h-4 w-4" />
+        </button>
+      )}
       <button
         onClick={onExport}
         className="rounded p-1 text-text-secondary hover:bg-surface-hover hover:text-text-primary"

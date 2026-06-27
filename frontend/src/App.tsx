@@ -6,7 +6,7 @@ import { Sidebar } from "@/components/sidebar/sidebar";
 import { ChatPanel } from "@/components/chat/chat-panel";
 import { StatusBar } from "@/components/status-bar/status-bar";
 import { SettingsModal } from "@/components/settings/settings-modal";
-import { ExportChat, HasAPIKey, GetSettings, SelectDirectory, GetCachedModels } from "@wails/go/main/App";
+import { ExportChat, HasAPIKey, GetSettings, SelectDirectory, GetCachedModels, GenerateProjectFiles } from "@wails/go/main/App";
 import { EventsOn, EventsOff } from "@wails/runtime";
 
 function App() {
@@ -77,6 +77,19 @@ function App() {
     URL.revokeObjectURL(url);
   }, [messages]);
 
+  const handleGenerate = useCallback(async () => {
+    if (!activeProjectId) return;
+    const msgs = useChatStore.getState().messages;
+    if (msgs.length === 0) return;
+    const name = useChatStore.getState().projects.find((p) => p.id === activeProjectId)?.name || "project";
+    try {
+      await GenerateProjectFiles(provider, model, name, msgs.map((m) => ({ role: m.role, content: m.content })));
+      alert("Files generated in ~/Development/" + name + "/");
+    } catch (e) {
+      alert("Generation failed: " + (e instanceof Error ? e.message : String(e)));
+    }
+  }, [activeProjectId, provider, model]);
+
   useEffect(() => {
     EventsOn("menu-export", () => { handleExport(); });
     EventsOn("menu-settings", () => { setSettingsOpen(true); });
@@ -104,6 +117,7 @@ function App() {
         onModelChange={setModel}
         onOpenSettings={() => setSettingsOpen(true)}
         onExport={handleExport}
+        onGenerate={activeProjectId ? handleGenerate : undefined}
       />
       <SettingsModal
         open={settingsOpen}

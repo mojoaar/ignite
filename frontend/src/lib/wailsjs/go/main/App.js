@@ -26,6 +26,10 @@ export function ExportChat(arg1) {
   return window['go']['main']['App']['ExportChat'](arg1);
 }
 
+export function GenerateProjectFiles(arg1, arg2, arg3, arg4) {
+  return window['go']['main']['App']['GenerateProjectFiles'](arg1, arg2, arg3, arg4);
+}
+
 export function GetCachedModels(arg1) {
   return window['go']['main']['App']['GetCachedModels'](arg1);
 }
