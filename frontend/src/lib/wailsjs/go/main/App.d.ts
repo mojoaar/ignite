@@ -23,6 +23,8 @@ export function GetProvider(arg1:string):Promise<providers.LLMProvider>;
 
 export function GetSettings():Promise<settings.Config>;
 
+export function GetVersion():Promise<string>;
+
 export function Greet(arg1:string):Promise<string>;
 
 export function HasAPIKey(arg1:string):Promise<boolean>;

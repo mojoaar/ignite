@@ -220,7 +220,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
               <Label className="text-text-secondary">Provider</Label>
               <Select value={selectedProvider} onValueChange={(v) => v && setSelectedProvider(v)}>
                 <SelectTrigger className="bg-background">
-                  <SelectValue />
+                  <SelectValue>{PROVIDER_LABELS[selectedProvider] || selectedProvider}</SelectValue>
                 </SelectTrigger>
                 <SelectContent>
                   {PROVIDER_IDS.map((pid) => (
@@ -253,7 +253,9 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                   }}
                 >
                   <SelectTrigger className="bg-background">
-                    <SelectValue placeholder="Select a model" />
+                  <SelectValue placeholder="Select a model">
+                    {providerFields[selectedProvider]?.defaultModel || ""}
+                  </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {(providerModels[selectedProvider] ?? []).map((m) => (
