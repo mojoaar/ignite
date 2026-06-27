@@ -63,8 +63,8 @@ func TestAnalyzePath_Wails(t *testing.T) {
 func TestAnalyzePath_EmptyDir(t *testing.T) {
 	dir := createTempDir(t, map[string]string{})
 	result := AnalyzePath(dir)
-	if !contains(result, "no project files found") {
-		t.Error("expected 'no project files found' message")
+	if !contains(result, "No project files found") {
+		t.Error("expected 'No project files found' message")
 	}
 }
 
