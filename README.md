@@ -2,7 +2,7 @@
 
 > Provisioning with a heartbeat
 
-A desktop GUI for provisioning new software projects with Kvasir-level
+A desktop GUI for provisioning new software
 documentation quality. Ignite conducts AI-guided conversational interviews and
 generates project specs, agent guides, implementation plans, and READMEs.
 
