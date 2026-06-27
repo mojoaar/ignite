@@ -48,11 +48,11 @@ func LoadConfig() (*Config, error) {
 		}
 		return nil, err
 	}
-	var cfg Config
+	cfg := DefaultConfig()
 	if err := json.Unmarshal(data, &cfg); err != nil {
 		return nil, err
 	}
-	return &cfg, nil
+	return cfg, nil
 }
 
 func SaveConfig(cfg *Config) error {
