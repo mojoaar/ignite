@@ -62,6 +62,10 @@ export function ListProviderModels(arg1) {
   return window['go']['main']['App']['ListProviderModels'](arg1);
 }
 
+export function ResizeWindow(arg1, arg2) {
+  return window['go']['main']['App']['ResizeWindow'](arg1, arg2);
+}
+
 export function SaveProjectFiles(arg1, arg2) {
   return window['go']['main']['App']['SaveProjectFiles'](arg1, arg2);
 }

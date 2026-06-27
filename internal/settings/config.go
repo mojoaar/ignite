@@ -20,6 +20,8 @@ type Config struct {
 	Font              string                    `json:"font"`
 	Name              string                    `json:"name"`
 	Avatar            string                    `json:"avatar"`
+	WindowWidth       int                       `json:"window_width"`
+	WindowHeight      int                       `json:"window_height"`
 }
 
 func configPath() (string, error) {
@@ -72,6 +74,8 @@ func DefaultConfig() *Config {
 		Appearance:        "dark",
 		DefaultLicense:    "AGPL-3.0",
 		DefaultProjectDir: "~/Development",
-		Font:              "JetBrains Mono",
+		Font:           "JetBrains Mono",
+		WindowWidth:    1024,
+		WindowHeight:   768,
 	}
 }

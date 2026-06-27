@@ -35,6 +35,8 @@ export function ListProjects():Promise<Array<history.Project>>;
 
 export function ListProviderModels(arg1:string):Promise<Array<providers.Model>>;
 
+export function ResizeWindow(arg1:number,arg2:number):Promise<void>;
+
 export function SaveProjectFiles(arg1:string,arg2:templates.ProjectFiles):Promise<void>;
 
 export function SaveSettings(arg1:settings.Config):Promise<void>;

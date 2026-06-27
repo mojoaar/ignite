@@ -139,6 +139,8 @@ export namespace settings {
 	    font: string;
 	    name: string;
 	    avatar: string;
+	    window_width: number;
+	    window_height: number;
 	
 	    static createFrom(source: any = {}) {
 	        return new Config(source);
@@ -154,6 +156,8 @@ export namespace settings {
 	        this.font = source["font"];
 	        this.name = source["name"];
 	        this.avatar = source["avatar"];
+	        this.window_width = source["window_width"];
+	        this.window_height = source["window_height"];
 	    }
 	
 		convertValues(a: any, classs: any, asMap: boolean = false): any {

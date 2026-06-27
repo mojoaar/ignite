@@ -33,6 +33,8 @@ func (a *App) startup(ctx context.Context) {
 	}
 	a.cfg = cfg
 
+	runtime.WindowSetSize(ctx, cfg.WindowWidth, cfg.WindowHeight)
+
 	home, _ := os.UserHomeDir()
 	dbPath := filepath.Join(home, ".ignite", "history.db")
 	store, err := history.OpenDB(dbPath)
@@ -269,6 +271,10 @@ func (a *App) ExportChat(messages []history.Message) string {
 
 func (a *App) AnalyzePath(path string) string {
 	return scanner.AnalyzePath(path)
+}
+
+func (a *App) ResizeWindow(width, height int) {
+	runtime.WindowSetSize(a.ctx, width, height)
 }
 
 func (a *App) SelectDirectory() string {

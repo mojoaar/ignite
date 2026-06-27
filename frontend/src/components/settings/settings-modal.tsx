@@ -24,6 +24,7 @@ import {
   ValidateProviderKey,
   GetCachedModels,
   SelectDirectory,
+  ResizeWindow,
 } from "@wails/go/main/App";
 import { useThemeStore } from "@/lib/store/theme";
 import { cn } from "@/lib/utils";
@@ -49,6 +50,8 @@ interface SettingsData {
   font: string;
   name?: string;
   avatar?: string;
+  window_width?: number;
+  window_height?: number;
 }
 
 const PROVIDER_IDS = ["opencode-go", "opencode-zen", "deepseek"];
@@ -412,6 +415,36 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                   {settings.default_project_dir}
                 </span>
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-text-secondary">Window Size</Label>
+              <Select
+                value={`${settings.window_width || 1024}x${settings.window_height || 768}`}
+                onValueChange={(v) => {
+                  if (!v) return;
+                  const [w, h] = v.split("x").map(Number);
+                  setSettings((s) => s && { ...s, window_width: w, window_height: h });
+                  ResizeWindow(w, h).catch(() => {});
+                }}
+              >
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select size" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[
+                    { label: "Small (1024×768)", w: 1024, h: 768 },
+                    { label: "Medium (1440×900)", w: 1440, h: 900 },
+                    { label: "Large (1920×1080)", w: 1920, h: 1080 },
+                    { label: "4K (2560×1440)", w: 2560, h: 1440 },
+                    { label: "Full Screen", w: 0, h: 0 },
+                  ].map((p) => (
+                    <SelectItem key={p.label} value={`${p.w}x${p.h}`}>
+                      {p.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
