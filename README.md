@@ -73,7 +73,19 @@ AGPL-3.0 — see [LICENSE](LICENSE)
 
 ## Changelog
 
-### v0.1.4 (current)
+### v0.1.5 (current — first tagged release)
+
+- Web fetch — paste URLs in chat, Ignite fetches and injects page content as context
+- Phase-aware generate icon (red → amber → green based on interview progress)
+- Comprehensive site/docs/README audit — 20 accuracy fixes
+- Stream fallback — non-streaming retry on provider streaming failure
+- Phase tracking with auto-detected conversation progress
+- Scanner tests (6 tests covering Go, Node, Wails, empty dirs)
+- React ErrorBoundary for crash resilience
+- `Role` type safety — `"user" | "assistant" | "system"` union type
+- Release deployed to GitHub with tagged binaries
+
+### v0.1.4
 
 - System prompt injected into AI conversations (5-phase interview guide)
 - JSON project name parsing — AI auto-renames "Untitled" projects
