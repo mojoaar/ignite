@@ -86,7 +86,13 @@ function App() {
       />
       <SettingsModal
         open={settingsOpen}
-        onClose={() => setSettingsOpen(false)}
+        onClose={() => {
+          setSettingsOpen(false);
+          GetSettings().then((s) => {
+            const saved = s.providers?.[provider]?.default_model;
+            if (saved) setModel(saved);
+          }).catch(() => {});
+        }}
       />
     </div>
   );
