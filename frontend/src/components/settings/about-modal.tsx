@@ -27,19 +27,19 @@ export function AboutModal({ open, onClose }: AboutModalProps) {
         <DialogHeader>
           <DialogTitle className="font-mono text-lg">Ignite</DialogTitle>
         </DialogHeader>
-        <div className="space-y-3 text-sm text-text-secondary">
-          <p className="font-mono text-base text-text-primary text-center">
+        <div className="flex flex-col items-center space-y-3 text-sm text-text-secondary">
+          <p className="font-mono text-base text-text-primary">
             Provisioning with a heartbeat
           </p>
-          <p className="font-mono text-sm text-accent text-center">
+          <p className="font-mono text-sm text-accent">
             v{version}
           </p>
-          <p>
+          <p className="w-full max-w-xs text-left">
             A desktop GUI for provisioning new software
             documentation quality. Conducts AI-guided interviews and generates
             project specs, agent guides, implementation plans, and READMEs.
           </p>
-          <div className="space-y-1 pt-2 text-left">
+          <div className="w-full max-w-xs space-y-1 pt-2 text-left">
             <p>
               <span className="text-text-primary">Author:</span> Morten Johansen
             </p>
