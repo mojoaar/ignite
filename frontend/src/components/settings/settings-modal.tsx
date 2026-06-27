@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { Eye, EyeOff, Check, Loader2, XCircle } from "lucide-react";
+import { Eye, EyeOff, Check, Loader2, XCircle, Folder } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -23,11 +23,12 @@ import {
   HasAPIKey,
   ValidateProviderKey,
   GetCachedModels,
+  SelectDirectory,
 } from "@wails/go/main/App";
 import { useThemeStore } from "@/lib/store/theme";
 import { cn } from "@/lib/utils";
 
-type Tab = "providers" | "appearance";
+type Tab = "providers" | "preferences";
 
 interface ProviderFields {
   endpoint: string;
@@ -196,7 +197,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         </DialogHeader>
 
         <div className="flex gap-1 rounded-md bg-background p-1">
-          {(["providers", "appearance"] as Tab[]).map((t) => (
+          {(["providers", "preferences"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -322,7 +323,7 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
           </div>
         )}
 
-        {tab === "appearance" && (
+        {tab === "preferences" && (
           <div className="space-y-4">
             <div className="space-y-2">
               <Label className="text-text-secondary">Theme</Label>
@@ -393,13 +394,24 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
 
             <div className="space-y-2">
               <Label className="text-text-secondary">Default Project Directory</Label>
-              <Input
-                value={settings.default_project_dir}
-                onChange={(e) =>
-                  setSettings((s) => s && { ...s, default_project_dir: e.target.value })
-                }
-                className="bg-surface font-mono text-sm"
-              />
+              <div className="flex items-center gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={async () => {
+                    try {
+                      const dir = await SelectDirectory();
+                      setSettings((s) => s && { ...s, default_project_dir: dir });
+                    } catch {}
+                  }}
+                >
+                  <Folder className="h-4 w-4" />
+                </Button>
+                <span className="font-mono text-sm text-text-primary truncate">
+                  {settings.default_project_dir}
+                </span>
+              </div>
             </div>
 
             <div className="space-y-2">
