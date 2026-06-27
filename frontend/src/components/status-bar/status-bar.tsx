@@ -7,6 +7,7 @@ const PROVIDERS = [
   { id: "opencode-zen", label: "OpenCode Zen" },
   { id: "claude", label: "Claude" },
   { id: "deepseek", label: "DeepSeek" },
+  { id: "github-copilot", label: "GitHub Copilot" },
 ];
 
 interface StatusBarProps {

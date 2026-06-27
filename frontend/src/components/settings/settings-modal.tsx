@@ -48,13 +48,14 @@ interface SettingsData {
   font: string;
 }
 
-const PROVIDER_IDS = ["opencode-go", "opencode-zen", "claude", "deepseek"];
+const PROVIDER_IDS = ["opencode-go", "opencode-zen", "claude", "deepseek", "github-copilot"];
 
 const PROVIDER_LABELS: Record<string, string> = {
   "opencode-go": "OpenCode Go",
   "opencode-zen": "OpenCode Zen",
   claude: "Claude",
   deepseek: "DeepSeek",
+  "github-copilot": "GitHub Copilot",
 };
 
 const PROVIDER_ENDPOINTS: Record<string, string> = {
@@ -62,6 +63,7 @@ const PROVIDER_ENDPOINTS: Record<string, string> = {
   "opencode-zen": "https://opencode.ai/zen/v1",
   claude: "https://api.anthropic.com/v1/messages",
   deepseek: "https://api.deepseek.com/v1",
+  "github-copilot": "https://api.github.com/copilot",
 };
 
 
