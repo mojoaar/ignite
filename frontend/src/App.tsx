@@ -13,6 +13,7 @@ function App() {
   useTheme();
   const { sendMessage, subscribeToStream } = useConversation();
   const activeProjectId = useChatStore((s) => s.activeProjectId);
+  const activeProjectPath = useChatStore((s) => s.activeProjectPath);
   const messages = useChatStore((s) => s.messages);
 
   const [provider, setProvider] = useState("opencode-go");
@@ -86,7 +87,7 @@ function App() {
       <StatusBar
         provider={provider}
         model={model}
-        projectDir={projectDir}
+        projectDir={activeProjectPath || projectDir}
         onProviderChange={setProvider}
         onModelChange={setModel}
         onOpenSettings={() => setSettingsOpen(true)}

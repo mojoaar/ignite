@@ -11,6 +11,7 @@ export function Sidebar() {
   const activeProjectId = useChatStore((s) => s.activeProjectId);
   const setProjects = useChatStore((s) => s.setProjects);
   const setActiveProject = useChatStore((s) => s.setActiveProject);
+  const setActiveProjectPath = useChatStore((s) => s.setActiveProjectPath);
   const setProjectName = useChatStore((s) => s.setProjectName);
   const removeProject = useChatStore((s) => s.removeProject);
   const setMessages = useChatStore((s) => s.setMessages);
@@ -82,12 +83,15 @@ export function Sidebar() {
       const msgs = await GetMessages(id);
       setMessages(msgs ?? []);
       const proj = await GetProject(id);
-      if (proj && proj.name) {
-        setProjects(
-          useChatStore.getState().projects.map((p) =>
-            p.id === id ? { ...p, name: proj.name, tagline: proj.tagline } : p
-          )
-        );
+      if (proj) {
+        setActiveProjectPath(proj.path || "");
+        if (proj.name) {
+          setProjects(
+            useChatStore.getState().projects.map((p) =>
+              p.id === id ? { ...p, name: proj.name, tagline: proj.tagline } : p
+            )
+          );
+        }
       }
     } catch {}
   };

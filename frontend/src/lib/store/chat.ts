@@ -25,6 +25,7 @@ export interface Project {
 interface ChatState {
   projects: Project[];
   activeProjectId: string | null;
+  activeProjectPath: string;
   messages: Message[];
   streamingContent: string;
   isStreaming: boolean;
@@ -33,6 +34,7 @@ interface ChatState {
   setProjectName: (id: string, name: string, tagline: string) => void;
   removeProject: (id: string) => void;
   setActiveProject: (id: string) => void;
+  setActiveProjectPath: (path: string) => void;
   addMessage: (msg: Message) => void;
   setMessages: (msgs: Message[]) => void;
   appendStreamChunk: (chunk: string) => void;
@@ -43,6 +45,7 @@ interface ChatState {
 export const useChatStore = create<ChatState>((set) => ({
   projects: [],
   activeProjectId: null,
+  activeProjectPath: "",
   messages: [],
   streamingContent: "",
   isStreaming: false,
@@ -61,6 +64,7 @@ export const useChatStore = create<ChatState>((set) => ({
       messages: s.activeProjectId === id ? [] : s.messages,
     })),
   setActiveProject: (id) => set({ activeProjectId: id, messages: [], streamingContent: "" }),
+  setActiveProjectPath: (path) => set({ activeProjectPath: path }),
   addMessage: (msg) =>
     set((s) => ({ messages: [...s.messages, msg] })),
   setMessages: (msgs) => set({ messages: msgs }),
