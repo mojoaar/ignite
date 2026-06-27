@@ -1,9 +1,9 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Flame, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useChatStore } from "@/lib/store/chat";
 import { cn } from "@/lib/utils";
-import { ListProjects, CreateProject, GetProject, GetMessages, DeleteProject } from "@wails/go/main/App";
+import { ListProjects, CreateProject, GetProject, GetMessages, DeleteProject, UpdateProject } from "@wails/go/main/App";
 import { EventsOn } from "@wails/runtime";
 
 export function Sidebar() {
@@ -11,8 +11,39 @@ export function Sidebar() {
   const activeProjectId = useChatStore((s) => s.activeProjectId);
   const setProjects = useChatStore((s) => s.setProjects);
   const setActiveProject = useChatStore((s) => s.setActiveProject);
+  const setProjectName = useChatStore((s) => s.setProjectName);
   const removeProject = useChatStore((s) => s.removeProject);
   const setMessages = useChatStore((s) => s.setMessages);
+
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editValue, setEditValue] = useState("");
+
+  const startRename = (id: string, currentName: string) => {
+    setEditingId(id);
+    setEditValue(currentName);
+  };
+
+  const commitRename = async () => {
+    if (!editingId) return;
+    const val = editValue.trim();
+    try {
+      await UpdateProject({
+        id: editingId,
+        name: val,
+        tagline: "",
+        path: "",
+        provider: "",
+        model: "",
+        created_at: "",
+        updated_at: "",
+      });
+      setProjectName(editingId, val, "");
+      useChatStore.getState().projects.map((p) =>
+        p.id === editingId ? { ...p, name: val } : p
+      );
+    } catch {}
+    setEditingId(null);
+  };
 
   useEffect(() => {
     ListProjects()
@@ -104,9 +135,27 @@ export function Sidebar() {
             )}
           >
             <span className="flex h-2 w-2 shrink-0 rounded-full bg-accent" />
-            <span className="truncate font-mono text-xs">
-              {project.name || "Untitled"}
-            </span>
+            {editingId === project.id ? (
+              <input
+                autoFocus
+                value={editValue}
+                onChange={(e) => setEditValue(e.target.value)}
+                onBlur={commitRename}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") commitRename();
+                  if (e.key === "Escape") setEditingId(null);
+                }}
+                onClick={(e) => e.stopPropagation()}
+                className="w-full truncate rounded border border-accent bg-background px-1 py-0 font-mono text-xs text-text-primary outline-none"
+              />
+            ) : (
+              <span
+                className="truncate font-mono text-xs cursor-text"
+                onDoubleClick={() => startRename(project.id, project.name || "Untitled")}
+              >
+                {project.name || "Untitled"}
+              </span>
+            )}
             <button
               onClick={(e) => handleDeleteProject(project.id, e)}
               className="ml-auto shrink-0 rounded p-0.5 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-surface-hover hover:text-error"

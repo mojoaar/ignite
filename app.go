@@ -146,6 +146,9 @@ func (a *App) HasAPIKey(provider string) bool {
 
 func (a *App) CreateProject(p history.Project) error { return a.store.CreateProject(p) }
 func (a *App) UpdateProject(p history.Project) error { return a.store.UpdateProject(p) }
+func (a *App) SetProjectMeta(id, name, tagline string) error {
+	return a.store.UpdateProject(history.Project{ID: id, Name: name, Tagline: tagline})
+}
 func (a *App) ListProjects() ([]history.Project, error) { return a.store.ListProjects() }
 func (a *App) GetProject(id string) (*history.Project, error) { return a.store.GetProject(id) }
 func (a *App) DeleteProject(id string) error              { return a.store.DeleteProject(id) }

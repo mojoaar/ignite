@@ -47,6 +47,8 @@ export function SendMessageStream(arg1:string,arg2:string,arg3:Array<providers.M
 
 export function SetAPIKey(arg1:string,arg2:string):Promise<void>;
 
+export function SetProjectMeta(arg1:string,arg2:string,arg3:string):Promise<void>;
+
 export function UpdateProject(arg1:history.Project):Promise<void>;
 
 export function ValidateProviderKey(arg1:string,arg2:string):Promise<void>;

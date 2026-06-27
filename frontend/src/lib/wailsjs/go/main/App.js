@@ -86,6 +86,10 @@ export function SetAPIKey(arg1, arg2) {
   return window['go']['main']['App']['SetAPIKey'](arg1, arg2);
 }
 
+export function SetProjectMeta(arg1, arg2, arg3) {
+  return window['go']['main']['App']['SetProjectMeta'](arg1, arg2, arg3);
+}
+
 export function UpdateProject(arg1) {
   return window['go']['main']['App']['UpdateProject'](arg1);
 }

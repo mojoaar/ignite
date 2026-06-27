@@ -1,9 +1,23 @@
 import { useCallback } from "react";
 import { useChatStore } from "@/lib/store/chat";
-import { SendMessageStream, AddMessage, AnalyzePath } from "@wails/go/main/App";
+import { SendMessageStream, AddMessage, AnalyzePath, SetProjectMeta } from "@wails/go/main/App";
 import { EventsOn, EventsOff } from "@wails/runtime";
 
 const PATH_PATTERN = /(~\/\S+|(?:\/Users\/|\/home\/|\/tmp\/)\S+)/g;
+
+const SYSTEM_PROMPT = `You are Ignite's provisioning assistant. Follow this 5-phase interview:
+
+Phase 1: Identity & Vision — project name, tagline, description, target audience.
+  When confirmed, output: {"project":{"name":"...","tagline":"..."}}
+
+Phase 2: Tech Stack — frontend, backend, database, auth, hosting. Offer guidance.
+Phase 3: Features & Architecture — core features, API design, DB schema.
+Phase 4: Roadmap & Quality — phases 0-4, performance targets, risks.
+Phase 5: Generation — produce 4 files: project.md, agents.md, plan.md, README.md.
+
+Ask one question at a time. Be concise. Use the JSON format to report decisions.`;
+
+const PROJ_JSON = /\{"project"\s*:\s*\{"name"\s*:\s*"([^"]+)"\s*,\s*"tagline"\s*:\s*"([^"]*)"\}\}/;
 
 function extractPaths(content: string): string[] {
   const matches = content.match(PATH_PATTERN);
@@ -17,6 +31,7 @@ export function useConversation() {
   const finishStreaming = useChatStore((s) => s.finishStreaming);
   const activeProjectId = useChatStore((s) => s.activeProjectId);
   const messages = useChatStore((s) => s.messages);
+  const setProjectName = useChatStore((s) => s.setProjectName);
 
   const sendMessage = useCallback(
     async (provider: string, model: string, content: string) => {
@@ -38,6 +53,7 @@ export function useConversation() {
       startStreaming();
 
       const apiMessages = [
+        { role: "system", content: SYSTEM_PROMPT },
         ...messages.map((m) => ({ role: m.role, content: m.content })),
         { role: "user", content },
       ];
@@ -55,7 +71,7 @@ export function useConversation() {
         if (scans) {
           apiMessages.splice(-1, 0, {
             role: "system",
-            content: `The following path context was automatically resolved from the user's message. Use this information to inform your response:\n\n${scans}`,
+            content: `Path context from user message:\n\n${scans}`,
           });
         }
       }
@@ -64,6 +80,14 @@ export function useConversation() {
         await SendMessageStream(provider, model, apiMessages);
         const streamedContent = useChatStore.getState().streamingContent;
         finishStreaming(streamedContent);
+
+        const match = streamedContent.match(PROJ_JSON);
+        if (match && activeProjectId) {
+          const name = match[1];
+          const tagline = match[2] || "";
+          setProjectName(activeProjectId, name, tagline);
+          SetProjectMeta(activeProjectId, name, tagline).catch(() => {});
+        }
 
         if (activeProjectId) {
           const finalText = streamedContent || "[empty response]";
@@ -81,7 +105,7 @@ export function useConversation() {
         useChatStore.setState({ isStreaming: false });
       }
     },
-    [activeProjectId, messages, addMessage, startStreaming, finishStreaming]
+    [activeProjectId, messages, addMessage, startStreaming, finishStreaming, setProjectName]
   );
 
   const subscribeToStream = useCallback(() => {
