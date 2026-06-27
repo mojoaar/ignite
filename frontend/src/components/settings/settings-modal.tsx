@@ -87,7 +87,6 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   }, [open, onClose]);
 
   const loadProviderModels = async (provider: string) => {
-    if (providerModels[provider]) return;
     try {
       const models = await GetCachedModels(provider);
       setProviderModels((prev) => ({
@@ -103,6 +102,16 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
   useEffect(() => {
     loadProviderModels(selectedProvider);
   }, [selectedProvider, open]);
+
+  useEffect(() => {
+    const models = providerModels[selectedProvider];
+    if (models && models.length > 0) {
+      const current = providerFields[selectedProvider]?.defaultModel;
+      if (!current || !models.find((m) => m.id === current)) {
+        setField(selectedProvider, "defaultModel", models[0].id);
+      }
+    }
+  }, [providerModels, selectedProvider]);
 
   useEffect(() => {
     if (!open) return;
@@ -247,25 +256,23 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                   }}
                 >
                   <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Set API key to fetch models">
-                    {(() => {
-                      const mid = providerFields[selectedProvider]?.defaultModel;
-                      if (!mid) return "";
-                      const found = (providerModels[selectedProvider] ?? []).find((m) => m.id === mid);
-                      return found ? found.name : mid;
-                    })()}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {(providerModels[selectedProvider] ?? []).map((m) => (
-                    <SelectItem key={m.id} value={m.id}>
-                      {m.name}
-                    </SelectItem>
-                  ))}
-                  {(!providerModels[selectedProvider] || providerModels[selectedProvider].length === 0) && (
-                    <SelectItem value="">Set API key to fetch models</SelectItem>
-                  )}
-                </SelectContent>
+                    <SelectValue placeholder="Select a model">
+                      {(() => {
+                        const mid = providerFields[selectedProvider]?.defaultModel;
+                        if (!mid) return null;
+                        const models = providerModels[selectedProvider] ?? [];
+                        const found = models.find((m) => m.id === mid);
+                        return found ? <span>{found.name}</span> : <span className="font-mono text-xs">{mid}</span>;
+                      })()}
+                    </SelectValue>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(providerModels[selectedProvider] ?? []).map((m) => (
+                      <SelectItem key={m.id} value={m.id}>
+                        {m.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
                 </Select>
               </div>
 
