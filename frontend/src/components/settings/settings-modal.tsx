@@ -406,9 +406,21 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
                   onValueChange={(v) => {
                     if (!v) return;
                     setSettings((s) => s && { ...s, font: v });
+                    const families: Record<string, string> = {
+                      "JetBrains Mono": "\"JetBrains Mono\", monospace",
+                      "Fira Code": "\"Fira Code\", monospace",
+                      "Cascadia Code": "\"Cascadia Code\", monospace",
+                      "IBM Plex Mono": "\"IBM Plex Mono\", monospace",
+                      "Source Code Pro": "\"Source Code Pro\", monospace",
+                      "Inconsolata": "\"Inconsolata\", monospace",
+                      "Ubuntu Mono": "\"Ubuntu Mono\", monospace",
+                      "DejaVu Sans Mono": "\"DejaVu Sans Mono\", monospace",
+                      "Roboto Mono": "\"Roboto Mono\", monospace",
+                      "Monoid": "Monoid, monospace",
+                    };
                     document.documentElement.style.setProperty(
                       "--font-mono",
-                      `"${v}", monospace`
+                      families[v] || `\"${v}\", monospace`
                     );
                   }}
               >
