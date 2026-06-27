@@ -6,7 +6,7 @@ import { Sidebar } from "@/components/sidebar/sidebar";
 import { ChatPanel } from "@/components/chat/chat-panel";
 import { StatusBar } from "@/components/status-bar/status-bar";
 import { SettingsModal } from "@/components/settings/settings-modal";
-import { ExportChat, HasAPIKey, GetSettings, SelectDirectory } from "@wails/go/main/App";
+import { ExportChat, HasAPIKey, GetSettings, SelectDirectory, GetCachedModels } from "@wails/go/main/App";
 import { EventsOn, EventsOff } from "@wails/runtime";
 
 function App() {
@@ -40,7 +40,13 @@ function App() {
   useEffect(() => {
     GetSettings().then((s) => {
       const saved = s.providers?.[provider]?.default_model;
-      if (saved) setModel(saved);
+      if (saved) {
+        setModel(saved);
+      } else {
+        GetCachedModels(provider).then((m) => {
+          if (m && m.length > 0) setModel(m[0].model_id);
+        }).catch(() => {});
+      }
     }).catch(() => {});
   }, [provider]);
 
