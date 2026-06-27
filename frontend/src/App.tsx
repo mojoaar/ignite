@@ -96,6 +96,7 @@ function App() {
         open={settingsOpen}
         onClose={() => {
           setSettingsOpen(false);
+          HasAPIKey(provider).then(setProviderReady).catch(() => setProviderReady(false));
           GetSettings().then((s) => {
             const saved = s.providers?.[provider]?.default_model;
             if (saved) setModel(saved);
