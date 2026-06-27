@@ -89,8 +89,6 @@ func (a *App) refreshProviderModels() {
 			p = providers.NewClaudeProvider(key)
 		case "deepseek":
 			p = providers.NewDeepSeekProvider(key)
-		case "github-copilot":
-			p = providers.NewGitHubCopilotProvider(key)
 		}
 		models, err := p.ListModels(a.ctx)
 		if err != nil {
