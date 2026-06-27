@@ -241,10 +241,32 @@
 
 ---
 
+## Phase 9: Cross-Platform Builds (Planned — v0.3.0)
+
+> Expand beyond macOS to Windows and Linux using GitHub Actions CI.
+
+- [ ] `.github/workflows/build.yml` — 4-job workflow (macOS, Windows, Linux, release)
+- [ ] macOS: `wails build -platform darwin/universal` — stable
+- [ ] Windows: `wails build -platform windows/amd64 -webview2 embed` — beta
+- [ ] Linux: `wails build -platform linux/amd64` on ubuntu-22.04 with webkit2gtk — beta
+- [ ] `softprops/action-gh-release` auto-attaches artifacts to GitHub release tag
+- [ ] Site docs updated with Windows/Linux download links + install instructions
+- [ ] Platform badges on README + landing page
+
+### Verification
+- [ ] CI builds pass on all 3 platforms on tag push
+- [ ] Artifacts appear on GitHub release
+- [ ] Windows `.exe` runs on Windows 10/11 with WebView2
+- [ ] Linux binary runs on Ubuntu 22.04+ with webkit2gtk
+
+---
+
 ## Changelog
 
 | Version | Date       | Changes                                                    |
 | :------ | :--------  | :--------------------------------------------------------- |
+| 0.1.6   | 2026-06-27 | Phase badge, toast notifications, phase progression fix, frontend component tests (43 tests) |
+| 0.1.5   | 2026-06-27 | First tagged release, GitHub release with binaries, site audit fixes |
 | 0.1.4   | 2026-06-27 | System prompt, JSON parsing, web fetch, generate files, phase tracking, hardening |
 | 0.1.3   | 2026-06-27 | Claude removed, Open Folder, project deletion, shared API keys, status bar fixes |
 | 0.1.2   | 2026-06-27 | Landing site, docs, SEO, favicons, model sync, config fix, Copilot removed |
