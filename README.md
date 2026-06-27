@@ -9,7 +9,7 @@ generates project specs, agent guides, implementation plans, and READMEs.
 ## Features
 
 - **5-Phase AI Interview** — Identity → Tech Stack → Features → Architecture → Generation
-- **Multi-Provider** — OpenCode Go, OpenCode Zen, DeepSeek
+- **Multi-Provider** — [OpenCode Go](https://opencode.ai/docs/go/), [OpenCode Zen](https://opencode.ai/docs/zen/), [DeepSeek](https://api-docs.deepseek.com/quick_start/pricing)
 - **Template-Driven Output** — project.md, agents.md, plan.md, README.md
 - **Dark/Light Theme** — Nordic-inspired dark palette, system sans-serif, offline fonts
 - **Project History** — SQLite persistence, resume mid-project from sidebar
