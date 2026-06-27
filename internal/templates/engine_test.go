@@ -61,3 +61,38 @@ func TestEngine_Generate(t *testing.T) {
 		t.Error("README.md missing feature")
 	}
 }
+
+func TestEmbeddedEngine(t *testing.T) {
+	engine, err := EmbeddedEngine()
+	if err != nil {
+		t.Fatalf("EmbeddedEngine: %v", err)
+	}
+	ctx := ProjectContext{
+		Name:    "embedded-test",
+		Tagline: "Testing embed",
+		License: "MIT",
+		Features: []string{"Fast"},
+		Phases: []Phase{
+			{Name: "Phase 0", Tasks: []string{"Setup"}},
+		},
+		TechStack: []TechItem{
+			{Category: "Frontend", Choice: "React"},
+		},
+	}
+	files, err := engine.Generate(ctx)
+	if err != nil {
+		t.Fatalf("Generate: %v", err)
+	}
+	if !strings.Contains(files.ProjectMD, "# embedded-test") {
+		t.Error("project.md missing project name")
+	}
+	if !strings.Contains(files.AgentsMD, "React") {
+		t.Error("agents.md missing tech stack")
+	}
+	if !strings.Contains(files.PlanMD, "Phase 0") {
+		t.Error("plan.md missing phase")
+	}
+	if !strings.Contains(files.ReadmeMD, "Fast") {
+		t.Error("README.md missing feature")
+	}
+}

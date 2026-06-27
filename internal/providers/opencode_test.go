@@ -75,3 +75,69 @@ func TestOpenCode_ListModels(t *testing.T) {
 		t.Errorf("expected 2, got %d", len(models))
 	}
 }
+
+func TestOpenCode_ChatError401(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusUnauthorized)
+	}))
+	defer server.Close()
+	p := &OpenCodeProvider{apiKey: "test", endpoint: server.URL, client: server.Client()}
+	_, err := p.Chat(context.Background(), "gpt-4o", []Message{{Role: RoleUser, Content: "Hi"}})
+	if err == nil {
+		t.Error("expected error on 401")
+	}
+}
+
+func TestOpenCode_ChatError500(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusInternalServerError)
+	}))
+	defer server.Close()
+	p := &OpenCodeProvider{apiKey: "test", endpoint: server.URL, client: server.Client()}
+	_, err := p.Chat(context.Background(), "gpt-4o", []Message{{Role: RoleUser, Content: "Hi"}})
+	if err == nil {
+		t.Error("expected error on 500")
+	}
+}
+
+func TestOpenCode_StreamBadJSON(t *testing.T) {
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/event-stream")
+		chunks := []string{
+			`data: {"choices":[{"delta":{"content":"ok"}}]}`,
+			`data: {invalid json`,
+			`data: {"choices":[{"delta":{"content":"done"}}]}`,
+			`data: [DONE]`,
+		}
+		for _, c := range chunks {
+			w.Write([]byte(c + "\n"))
+		}
+	}))
+	defer server.Close()
+	p := &OpenCodeProvider{apiKey: "test", endpoint: server.URL, client: server.Client()}
+	var full string
+	err := p.ChatStream(context.Background(), "gpt-4o", []Message{{Role: RoleUser, Content: "Hi"}}, func(chunk string) error {
+		full += chunk
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("ChatStream: %v", err)
+	}
+	if full != "okdone" {
+		t.Errorf("expected okdone, got %q", full)
+	}
+}
+
+func TestOpenCode_DefaultModels(t *testing.T) {
+	goProv := &OpenCodeProvider{apiKey: "", endpoint: "https://opencode.ai/zen/go/v1", client: &http.Client{}}
+	zenProv := &OpenCodeProvider{apiKey: "", endpoint: "https://opencode.ai/zen/v1", client: &http.Client{}}
+
+	goModels := goProv.defaultModelsGo()
+	if len(goModels) != 13 {
+		t.Errorf("expected 13 Go models, got %d", len(goModels))
+	}
+	zenModels := zenProv.defaultModelsZen()
+	if len(zenModels) < 20 {
+		t.Errorf("expected >=20 Zen models, got %d", len(zenModels))
+	}
+}
