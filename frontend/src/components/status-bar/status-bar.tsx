@@ -122,7 +122,7 @@ export function StatusBar({
             const lastPhase = msgs[msgs.length - 1].phase || "";
             if (lastPhase === "identity") return "h-4 w-4 text-error";
             if (lastPhase === "tech-stack" || lastPhase === "features") return "h-4 w-4 text-yellow-500";
-            return "h-4 w-4 text-success";
+            return "h-4 w-4";
           })()} />
         </button>
       )}
