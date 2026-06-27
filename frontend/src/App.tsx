@@ -38,14 +38,12 @@ function App() {
   }, [provider]);
 
   useEffect(() => {
-    const unsubNew = EventsOn("menu-new-project", () => {});
     const unsubExport = EventsOn("menu-export", () => { handleExport(); });
     const unsubSettings = EventsOn("menu-settings", () => { setSettingsOpen(true); });
     const unsubFolder = EventsOn("menu-open-folder", () => {
       SelectDirectory().then((dir: string) => setProjectDir(dir)).catch(() => {});
     });
     return () => {
-      typeof unsubNew === "function" && unsubNew();
       typeof unsubExport === "function" && unsubExport();
       typeof unsubSettings === "function" && unsubSettings();
       typeof unsubFolder === "function" && unsubFolder();

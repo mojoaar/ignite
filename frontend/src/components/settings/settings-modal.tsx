@@ -155,6 +155,8 @@ export function SettingsModal({ open, onClose }: SettingsModalProps) {
         const f = providerFields[pid];
         if (f?.apiKey) {
           await SetAPIKey(pid, f.apiKey);
+          if (pid === "opencode-go") await SetAPIKey("opencode-zen", f.apiKey);
+          if (pid === "opencode-zen") await SetAPIKey("opencode-go", f.apiKey);
         }
         newProviders[pid] = { endpoint: f.endpoint, default_model: f.defaultModel };
       }
