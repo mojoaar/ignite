@@ -8,4 +8,7 @@ scripts/local-deploy.sh
 *.log
 .env
 .agents/
+.claude/
+.vibe/
+.qwen/
 coverage/
