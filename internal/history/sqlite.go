@@ -133,12 +133,18 @@ func (s *Store) GetMessages(projectID string) ([]Message, error) {
 }
 
 func (s *Store) DeleteProject(id string) error {
-	_, err := s.db.Exec(`DELETE FROM conversations WHERE project_id = ?`, id)
+	tx, err := s.db.Begin()
 	if err != nil {
 		return err
 	}
-	_, err = s.db.Exec(`DELETE FROM projects WHERE id = ?`, id)
-	return err
+	defer tx.Rollback()
+	if _, err := tx.Exec(`DELETE FROM conversations WHERE project_id = ?`, id); err != nil {
+		return err
+	}
+	if _, err := tx.Exec(`DELETE FROM projects WHERE id = ?`, id); err != nil {
+		return err
+	}
+	return tx.Commit()
 }
 
 func (s *Store) Close() error { return s.db.Close() }

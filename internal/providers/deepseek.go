@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type DeepSeekProvider struct {
@@ -19,7 +20,7 @@ type DeepSeekProvider struct {
 
 func NewDeepSeekProvider(apiKey string) *DeepSeekProvider {
 	return &DeepSeekProvider{
-		apiKey: apiKey, endpoint: "https://api.deepseek.com/v1", client: &http.Client{},
+		apiKey: apiKey, endpoint: "https://api.deepseek.com/v1", client: &http.Client{Timeout: 120 * time.Second},
 	}
 }
 

@@ -9,6 +9,7 @@ import (
 	"io"
 	"net/http"
 	"strings"
+	"time"
 )
 
 type OpenCodeProvider struct {
@@ -19,7 +20,9 @@ type OpenCodeProvider struct {
 
 func NewOpenCodeProvider(apiKey, endpoint string) *OpenCodeProvider {
 	return &OpenCodeProvider{
-		apiKey: apiKey, endpoint: endpoint, client: &http.Client{},
+		apiKey:   apiKey,
+		endpoint: endpoint,
+		client:   &http.Client{Timeout: 120 * time.Second},
 	}
 }
 

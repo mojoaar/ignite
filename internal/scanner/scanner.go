@@ -268,6 +268,9 @@ func AnalyzePathContent(path string) string {
 		maxLen := 3000
 		content := string(data)
 		if len(content) > maxLen {
+			for maxLen > 0 && content[maxLen]&0xC0 == 0x80 {
+				maxLen--
+			}
 			content = content[:maxLen] + "\n... (truncated)"
 		}
 		sb.WriteString(fmt.Sprintf("=== %s ===\n%s\n\n", f, content))

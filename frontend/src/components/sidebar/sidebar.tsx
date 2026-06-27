@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useChatStore } from "@/lib/store/chat";
 import { cn } from "@/lib/utils";
 import { ListProjects, CreateProject, GetProject, GetMessages, DeleteProject, UpdateProject } from "@wails/go/main/App";
-import { EventsOn } from "@wails/runtime";
+import { EventsOn, EventsOff } from "@wails/runtime";
 
 export function Sidebar() {
   const projects = useChatStore((s) => s.projects);
@@ -53,7 +53,8 @@ export function Sidebar() {
   }, [setProjects]);
 
   useEffect(() => {
-    return EventsOn("menu-new-project", () => { handleNewProject(); });
+    EventsOn("menu-new-project", () => { handleNewProject(); });
+    return () => { EventsOff("menu-new-project"); };
   }, []);
 
   const handleNewProject = async () => {

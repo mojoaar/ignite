@@ -11,6 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/wailsapp/wails/v2/pkg/runtime"
@@ -19,6 +20,7 @@ import (
 type App struct {
 	ctx       context.Context
 	cfg       *settings.Config
+	cfgMu     sync.RWMutex
 	store     *history.Store
 	providers *providers.Manager
 }
@@ -125,10 +127,16 @@ func (a *App) GetVersion() string {
 	return version
 }
 
-func (a *App) GetSettings() *settings.Config { return a.cfg }
+func (a *App) GetSettings() *settings.Config {
+	a.cfgMu.RLock()
+	defer a.cfgMu.RUnlock()
+	return a.cfg
+}
 
 func (a *App) SaveSettings(cfg settings.Config) error {
+	a.cfgMu.Lock()
 	a.cfg = &cfg
+	a.cfgMu.Unlock()
 	return settings.SaveConfig(&cfg)
 }
 

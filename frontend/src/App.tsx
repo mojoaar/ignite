@@ -7,7 +7,7 @@ import { ChatPanel } from "@/components/chat/chat-panel";
 import { StatusBar } from "@/components/status-bar/status-bar";
 import { SettingsModal } from "@/components/settings/settings-modal";
 import { ExportChat, HasAPIKey, GetSettings, SelectDirectory } from "@wails/go/main/App";
-import { EventsOn } from "@wails/runtime";
+import { EventsOn, EventsOff } from "@wails/runtime";
 
 function App() {
   useTheme();
@@ -45,19 +45,6 @@ function App() {
   }, [provider]);
 
   useEffect(() => {
-    const unsubExport = EventsOn("menu-export", () => { handleExport(); });
-    const unsubSettings = EventsOn("menu-settings", () => { setSettingsOpen(true); });
-    const unsubFolder = EventsOn("menu-open-folder", () => {
-      SelectDirectory().then((dir: string) => setProjectDir(dir)).catch((e: unknown) => console.error("SelectDirectory failed:", e));
-    });
-    return () => {
-      typeof unsubExport === "function" && unsubExport();
-      typeof unsubSettings === "function" && unsubSettings();
-      typeof unsubFolder === "function" && unsubFolder();
-    };
-  }, [messages]);
-
-  useEffect(() => {
     const cleanup = subscribeToStream();
     return cleanup;
   }, [subscribeToStream]);
@@ -83,6 +70,19 @@ function App() {
     a.click();
     URL.revokeObjectURL(url);
   }, [messages]);
+
+  useEffect(() => {
+    EventsOn("menu-export", () => { handleExport(); });
+    EventsOn("menu-settings", () => { setSettingsOpen(true); });
+    EventsOn("menu-open-folder", () => {
+      SelectDirectory().then((dir: string) => setProjectDir(dir)).catch(() => {});
+    });
+    return () => {
+      EventsOff("menu-export");
+      EventsOff("menu-settings");
+      EventsOff("menu-open-folder");
+    };
+  }, [handleExport]);
 
   return (
     <div className="flex h-screen flex-col bg-background text-text-primary">
