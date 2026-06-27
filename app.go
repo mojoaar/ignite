@@ -35,10 +35,6 @@ func (a *App) startup(ctx context.Context) {
 	}
 	a.cfg = cfg
 
-	if _, ok := a.cfg.Providers[a.cfg.DefaultProvider]; !ok {
-		a.cfg.DefaultProvider = "opencode-go"
-	}
-
 	if cfg.WindowWidth == 0 {
 		cfg.WindowWidth = 1024
 	}
@@ -62,22 +58,34 @@ func (a *App) startup(ctx context.Context) {
 }
 
 func (a *App) ensureProviderConfigs() {
+	a.cfgMu.Lock()
+	defer a.cfgMu.Unlock()
+
 	knownProviders := map[string]string{
 		"opencode-go":  "https://opencode.ai/zen/go/v1",
 		"opencode-zen": "https://opencode.ai/zen/v1",
 		"deepseek":     "https://api.deepseek.com/v1",
 	}
+	changed := false
 	for pid := range a.cfg.Providers {
 		if _, ok := knownProviders[pid]; !ok {
 			delete(a.cfg.Providers, pid)
+			changed = true
 		}
 	}
 	for pid, endpoint := range knownProviders {
 		if _, ok := a.cfg.Providers[pid]; !ok {
 			a.cfg.Providers[pid] = settings.ProviderConfig{Endpoint: endpoint}
+			changed = true
 		}
 	}
-	settings.SaveConfig(a.cfg)
+	if _, ok := a.cfg.Providers[a.cfg.DefaultProvider]; !ok {
+		a.cfg.DefaultProvider = "opencode-go"
+		changed = true
+	}
+	if changed {
+		settings.SaveConfig(a.cfg)
+	}
 }
 
 func (a *App) shutdown(ctx context.Context) {
