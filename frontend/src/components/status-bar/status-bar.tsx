@@ -5,7 +5,6 @@ import { GetCachedModels, HasAPIKey } from "@wails/go/main/App";
 const PROVIDERS = [
   { id: "opencode-go", label: "OpenCode Go" },
   { id: "opencode-zen", label: "OpenCode Zen" },
-  { id: "claude", label: "Claude" },
   { id: "deepseek", label: "DeepSeek" },
 ];
 

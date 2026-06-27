@@ -50,7 +50,6 @@ func (a *App) ensureProviderConfigs() {
 	knownProviders := map[string]string{
 		"opencode-go":  "https://opencode.ai/zen/go/v1",
 		"opencode-zen": "https://opencode.ai/zen/v1",
-		"claude":       "https://api.anthropic.com/v1/messages",
 		"deepseek":     "https://api.deepseek.com/v1",
 	}
 	for pid := range a.cfg.Providers {
@@ -77,7 +76,7 @@ func (a *App) GetCachedModels(providerName string) ([]history.ProviderModel, err
 }
 
 func (a *App) refreshProviderModels() {
-	for _, name := range []string{"opencode-go", "opencode-zen", "claude", "deepseek"} {
+	for _, name := range []string{"opencode-go", "opencode-zen", "deepseek"} {
 		key, _ := settings.GetAPIKey(name)
 		var p providers.LLMProvider
 		switch name {
@@ -85,8 +84,6 @@ func (a *App) refreshProviderModels() {
 			p = providers.NewOpenCodeProvider(key, "https://opencode.ai/zen/go/v1")
 		case "opencode-zen":
 			p = providers.NewOpenCodeProvider(key, "https://opencode.ai/zen/v1")
-		case "claude":
-			p = providers.NewClaudeProvider(key)
 		case "deepseek":
 			p = providers.NewDeepSeekProvider(key)
 		}
@@ -167,8 +164,6 @@ func (a *App) GetProvider(name string) (providers.LLMProvider, error) {
 		return providers.NewOpenCodeProvider(key, "https://opencode.ai/zen/go/v1"), nil
 	case "opencode-zen":
 		return providers.NewOpenCodeProvider(key, "https://opencode.ai/zen/v1"), nil
-	case "claude":
-		return providers.NewClaudeProvider(key), nil
 	case "deepseek":
 		return providers.NewDeepSeekProvider(key), nil
 	default:
@@ -203,8 +198,6 @@ func (a *App) ValidateProviderKey(providerName, key string) error {
 		p = providers.NewOpenCodeProvider(key, "https://opencode.ai/zen/go/v1")
 	case "opencode-zen":
 		p = providers.NewOpenCodeProvider(key, "https://opencode.ai/zen/v1")
-	case "claude":
-		p = providers.NewClaudeProvider(key)
 	case "deepseek":
 		p = providers.NewDeepSeekProvider(key)
 	default:
@@ -243,8 +236,6 @@ func (a *App) ListProviderModels(providerName string) ([]providers.Model, error)
 	var p providers.LLMProvider
 	key, err := settings.GetAPIKey(providerName)
 	switch providerName {
-	case "claude":
-		p = providers.NewClaudeProvider(key)
 	case "deepseek":
 		p = providers.NewDeepSeekProvider(key)
 	default:

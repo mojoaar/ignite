@@ -41,7 +41,7 @@ function App() {
     const unsubExport = EventsOn("menu-export", () => { handleExport(); });
     const unsubSettings = EventsOn("menu-settings", () => { setSettingsOpen(true); });
     const unsubFolder = EventsOn("menu-open-folder", () => {
-      SelectDirectory().then((dir: string) => setProjectDir(dir)).catch(() => {});
+      SelectDirectory().then((dir: string) => setProjectDir(dir)).catch((e: unknown) => console.error("SelectDirectory failed:", e));
     });
     return () => {
       typeof unsubExport === "function" && unsubExport();
