@@ -71,17 +71,21 @@ function App() {
   );
 
   const handleExport = useCallback(async () => {
-    const md = await ExportChat(messages.map((m) => ({
-      ...m,
-      role: m.role,
-    })));
-    const blob = new Blob([md], { type: "text/markdown" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "conversation.md";
-    a.click();
-    URL.revokeObjectURL(url);
+    try {
+      const md = await ExportChat(messages.map((m) => ({
+        ...m,
+        role: m.role,
+      })));
+      const blob = new Blob([md], { type: "text/markdown" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "conversation.md";
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      showToast("Export failed", "error");
+    }
   }, [messages]);
 
   const handleGenerate = useCallback(async () => {

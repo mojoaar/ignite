@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { Bot } from "lucide-react";
@@ -83,7 +84,7 @@ export function ChatBubble({ message, isStreaming, avatar, userName }: ChatBubbl
           <p className="whitespace-pre-wrap">{message.content}</p>
         ) : (
           <div className="prose prose-sm prose-invert max-w-none [&_pre]:bg-transparent [&_pre]:p-0">
-            <ReactMarkdown components={components}>
+            <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
               {message.content}
             </ReactMarkdown>
             {isStreaming && (

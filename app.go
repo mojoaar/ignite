@@ -310,7 +310,7 @@ func (a *App) FetchURL(url string) string {
 	if !strings.HasPrefix(url, "https://") && !strings.HasPrefix(url, "http://") {
 		return ""
 	}
-	resp, err := http.Get(url)
+	resp, err := (&http.Client{Timeout: 10 * time.Second}).Get(url)
 	if err != nil {
 		return ""
 	}

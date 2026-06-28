@@ -27,7 +27,7 @@ const PROJ_JSON = /\{"project"\s*:\s*\{"name"\s*:\s*"([^"]+)"\s*,\s*"tagline"\s*
 
 function extractPaths(content: string): string[] {
   const matches = content.match(PATH_PATTERN);
-  return matches ? [...new Set(matches)] : [];
+  return matches ? [...new Set(matches.map((m) => m.replace(/[?!.,;:]+$/, "")))] : [];
 }
 
 export function useConversation() {
@@ -86,8 +86,9 @@ export function useConversation() {
       const urlMatches = content.match(/https?:\/\/\S+/g);
       let urlContent = "";
       if (urlMatches) {
+        const urls = [...new Set(urlMatches)].map((u) => u.replace(/[.,;:!?]+$/, ""));
         const urlResults = await Promise.allSettled(
-          [...new Set(urlMatches)].map((u) => FetchURL(u))
+          urls.map((u) => FetchURL(u))
         );
         urlContent = urlResults
           .map((r) => (r.status === "fulfilled" ? r.value : ""))
