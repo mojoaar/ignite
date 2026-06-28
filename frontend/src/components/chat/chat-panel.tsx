@@ -71,7 +71,7 @@ export function ChatPanel({ onSend, providerReady = false, avatar, userName }: C
         {messages.map((msg) => (
           <ChatBubble key={msg.id} message={msg} avatar={avatar} userName={userName} />
         ))}
-        {isStreaming && streamingContent && (
+        {isStreaming && (
           <ChatBubble
             message={{
               id: "stream",

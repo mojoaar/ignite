@@ -82,6 +82,13 @@ export function ChatBubble({ message, isStreaming, avatar, userName }: ChatBubbl
       >
         {isUser ? (
           <p className="whitespace-pre-wrap">{message.content}</p>
+        ) : isStreaming && !message.content ? (
+          <div className="flex items-center gap-2 py-1">
+            <span className="font-mono text-xs text-accent-light">Thinking</span>
+            <span className="thinking-dots">
+              <span /><span /><span />
+            </span>
+          </div>
         ) : (
           <div className="prose prose-sm prose-invert max-w-none [&_pre]:bg-transparent [&_pre]:p-0">
             <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
